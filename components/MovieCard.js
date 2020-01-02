@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import RoiLionImage from '../assets/images/roi_lion.jpg';
 import {
   Image,
   Text,
@@ -25,7 +24,10 @@ export default class MovieCard extends Component {
   render() {
     return (
       <View>
-        <Image source={RoiLionImage} style={{ width: "50%", height: 200 }} />
+        <Image
+          source={{ uri: this.state.movie.posterPath }}
+          style={{ width: "50%", height: 100, resizeMode: "contain" }}
+        />
         <Text>{this.state.movie.title}</Text>
       </View>
     );
