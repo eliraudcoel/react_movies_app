@@ -24,50 +24,63 @@ export class HomeScreen extends Component {
     }
 
     componentWillMount() {
-        return getMovies()
-            .then((movies) => {
-                this.setState({ movies });
-            });
+        // return getMovies()
+        //     .then((movies) => {
+        //         this.setState({ movies });
+        //     });
     }
 
     componentWillUnmount() {
     }
 
-
     updateSearch = (searchText) => {
-        console.log(searchText);
         this.setState({ searchText });
 
-        if (searchText.length % 3) {
-            // TODO search
-            searchBy(searchText)
-                .then((searchList) => {
-
-                })
-        }
+        return new Promise((resolve, reject) => {
+            if (searchText.length > 0 && searchText.length % 3 === 0) {
+                console.log(searchText);
+                return searchBy(searchText)
+                    .then((searchList) => {
+                        this.setState({ movies: searchList });
+                    })
+                    .then(() => {
+                        resolve()
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    })
+            } else {
+                resolve();
+            }
+        })
     };
 
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <Search updateCallback={this.updateSearch} />
+                <Search
+                    updateCallback={this.updateSearch}
+                    searchText={this.state.searchText}
+                />
 
-                {this.state.movies &&
-                    <Movies Movies={this.state.movies} />
-                }
+                {(this.state.movies && this.state.movies.length > 0) ? (
+                    <Movies movies={this.state.movies} />
+                ) : (
+                    <Text style={styles.tabBarInfoText}>Aucun film trouvé</Text>
+                )}
 
                 {/* For adding */}
-                <View style={styles.tabBarInfoContainer}>
-                    <Icon
-                        family={"ionicons"}
-                        size={26}
-                        name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
-                        color={"red"}
-                    />
-                    <Text style={styles.tabBarInfoText}>
-                        Ajouté au favori !
-              </Text>
-                </View>
+                {this.state.movieAdded &&
+                    <View style={styles.tabBarInfoContainer}>
+                        <Icon
+                            family={"ionicons"}
+                            size={26}
+                            name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+                            color={"red"}
+                        />
+                        <Text style={styles.tabBarInfoText}>Ajouté au favori !</Text>
+                    </View>
+                }
             </SafeAreaView>
         )
     };

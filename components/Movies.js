@@ -7,6 +7,20 @@ import {
 import MovieCard from './MovieCard';
 
 export class Movies extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      movies: props.movies,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      movies: nextProps.movies,
+    })
+  }
+
   render() {
     return (
       <ScrollView
@@ -14,13 +28,12 @@ export class Movies extends Component {
         contentContainerStyle={styles.contentContainer}>
         <FlatList
           data={this.state.movies}
+          keyExtractor={item => String(item.imdbID)}
           renderItem={({ item }) => <MovieCard movie={item} />}
         />
       </ScrollView>
     );
   }
-
-
 }
 
 const styles = StyleSheet.create({

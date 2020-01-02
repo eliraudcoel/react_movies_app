@@ -8,11 +8,25 @@ import {
 
 
 export default class MovieCard extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      movie: props.movie,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      movie: nextProps.movie,
+    })
+  }
+
   render() {
     return (
       <View>
-        <Image source={RoiLionImage} style={{ width: "80%", height: 200 }} />
-        <Text style={styles.item}>toto</Text>
+        <Image source={RoiLionImage} style={{ width: "50%", height: 200 }} />
+        <Text>{this.state.movie.title}</Text>
       </View>
     );
   }

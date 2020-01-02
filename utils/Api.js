@@ -1,70 +1,43 @@
 import { AsyncStorage } from 'react-native';
 import Movie from '../models/Movie';
 
-const API_KEY = "1bfb1af1";
-const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}`;
+const API_KEY = "a36cb15a17169e4f6f975e37a31f7c4b";
+const API_VERSION = 3;
+const API_URL = `https://api.themoviedb.org/${API_VERSION}/search/movie?api_key=${API_KEY}`;
 
 export function getMovies() {
-    return AsyncStorage.getItem('movies')
-        .then((movies) => {
-            console.log("new values", movies);
-            if (movies) {
-                return movies.map((movie) => {
-                    new Movie(movie);
-                })
-            } else {
-                return null;
-            }
-        })
-        .catch((error) => {
-            console.log("Get movies error", error);
-        })
+    // TODO -> call RoR server
 }
 
 export function storeMovie() {
-    return AsyncStorage.getItem('movies')
-        .then((movies) => {
-
-        })
-        .catch((error) => {
-            console.log("Get movies error", erro);
-        })
+    // TODO -> call RoR server
 }
 
 export function storeMovies(movies) {
-    return AsyncStorage.setItem('movies', movies)
-        .then((newMovies) => {
-            console.log("new values", newMovies);
-        })
-        .catch((error) => {
-            console.log("Get movies error", error);
-        })
+    // TODO -> call RoR server
 }
 
 export function setApiParams(params) {
     let uri = API_URL;
-    console.log(params);
-
     Object.keys(params).map(function (key) {
         uri = uri + "&" + key + "=" + params[key];
     });
-
-    console.log(uri);
     return uri;
 }
 
 export function searchBy(searchText) {
-    let uri = setApiParams({ s: searchText, page: 1 });
+    let uri = setApiParams({ query: searchText, page: 1, language: 'fr-FR'});
 
     return fetch(uri)
         .then((response) => response.json())
         .then((responseJson) => {
-            return responseJson["Search"];
+            return responseJson.results;
         })
         .then((searchList) => {
             let movieList = [];
             searchList.forEach(search => {
-                movieList.push(Movie(search));
+                let m = new Movie(search);
+                movieList.push(m);
             });
             return movieList;
         })

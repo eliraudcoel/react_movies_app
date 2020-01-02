@@ -23,13 +23,11 @@ export default class Search extends Component {
     };
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   this.setState({
-  //     speaker: nextProps.speaker,
-  //   })
-  // }
-
-  // Move into HomeScreen
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      searchText: nextProps.searchText,
+    })
+  }
 
   render() {
     return (
