@@ -1,4 +1,3 @@
-import * as WebBrowser from 'expo-web-browser';
 import React, { Component } from 'react';
 import {
     Platform,
@@ -10,7 +9,6 @@ import {
 
 import Icon from '../components/Icon';
 import { getMovies, searchBy } from '../utils/Api';
-import Movie from '../models/Movie';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
 
@@ -19,7 +17,26 @@ export class HomeScreen extends Component {
         super(props);
 
         this.state = {
-            movies: null,
+            // movies: null,
+            movies: [
+                {
+                    imdbID: 123,
+                    title: "Mamma",
+                    releaseDate: "2019",
+                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+                },
+                {
+                    imdbID: 456,
+                    title: "Mamma",
+                    releaseDate: "2019",
+                },
+                {
+                    imdbID: 789,
+                    title: "Mamma",
+                    releaseDate: "2019",
+                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+                }
+            ],
         };
     }
 

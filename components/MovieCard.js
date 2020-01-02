@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import {
   Image,
-  Text,
+  // Text,
   View,
+  StyleSheet,
+  Platform,
 } from 'react-native';
-
+import Icon from '../components/Icon';
+import { Container, Header, Content, List, ListItem, Left, Body, Right, Thumbnail, Text } from 'native-base';
 
 export default class MovieCard extends Component {
   constructor(props) {
@@ -23,13 +26,48 @@ export default class MovieCard extends Component {
 
   render() {
     return (
-      <View>
-        <Image
-          source={{ uri: this.state.movie.posterPath }}
-          style={{ width: "50%", height: 100, resizeMode: "contain" }}
-        />
-        <Text>{this.state.movie.title}</Text>
-      </View>
+      <ListItem thumbnail>
+        <Left>
+          <Thumbnail square
+            source={{ uri: this.state.movie.posterPath }}
+            style={styles.poster}
+          />
+        </Left>
+        <Body>
+          <Text>{this.state.movie.title}</Text>
+          <Text note>{this.state.movie.releaseDate}</Text>
+        </Body>
+        <Right style={styles.container}>
+          <Icon
+            style={styles.favoriteIcon}
+            family={"ionicons"}
+            size={26}
+            name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+            color={"#ddd"}
+          />
+          <Icon
+            family={"ionicons"}
+            size={26}
+            name={'ios-arrow-dropright'}
+            color={"black"}
+          />
+        </Right>
+      </ListItem>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  favoriteIcon: {
+    marginRight: 10
+  },
+  poster: {
+    backgroundColor: "#ddd",
+  }
+});
