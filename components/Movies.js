@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import {
-  ScrollView,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
+import { FlatList } from 'react-native';
 import MovieCard from './MovieCard';
 
 export class Movies extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       movies: props.movies,
+      navigation: props.navigation,
     };
   }
 
@@ -23,28 +19,21 @@ export class Movies extends Component {
 
   render() {
     return (
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}>
-        <FlatList
-          data={this.state.movies}
-          keyExtractor={item => String(item.imdbID)}
-          renderItem={({ item }) => <MovieCard movie={item} />}
-        />
-      </ScrollView>
+      <FlatList
+        data={this.state.movies}
+        keyExtractor={item => String(item.imdbID)}
+        renderItem={({ item }) =>
+          <MovieCard
+            movie={item}
+            goToNextScreen={() => {
+              console.log(item.imdbID);
+              this.state.navigation.navigate('Movie', { movieId: item.imdbID })
+            }}
+          />
+        }
+      />
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  contentContainer: {
-    marginTop: 30,
-    marginBottom: 20,
-  },
-});
 
 export default Movies;

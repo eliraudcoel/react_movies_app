@@ -25,6 +25,7 @@ export default class Search extends Component {
         placeholder="Type Here..."
         onChangeText={this.state.updateCallback}
         value={this.state.searchText}
+        {...this.props}
       />
     );
   }
