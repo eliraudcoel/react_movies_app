@@ -11,16 +11,99 @@ export function getMovies() {
 export function getMovieById(movieId) {
     const movieUri = `https://api.themoviedb.org/${API_VERSION}/movie/${movieId}?api_key=${API_KEY}`;
 
-    return fetch(movieUri)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            console.log("---------- responseJson ------------");
-            console.log(responseJson);
-            return responseJson;
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+    return new Promise((resolve, reject) => {
+        let responseJson = {
+            "adult": false,
+            "backdrop_path": "/txtRue33MaXv5HQpTiHPOmOcDxE.jpg",
+            "belongs_to_collection": {
+                "id": 458558,
+                "name": "Mamma Mia! Collection",
+                "poster_path": "/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg",
+                "backdrop_path": "/8lmFjt0Lord5vl6iGx3fRlZrBuN.jpg"
+            },
+            "budget": 52000000,
+            "genres": [
+                {
+                    "id": 35,
+                    "name": "Comedy"
+                },
+                {
+                    "id": 10749,
+                    "name": "Romance"
+                }
+            ],
+            "homepage": "http://www.mammamiamovie.com",
+            "id": 11631,
+            "imdb_id": "tt0795421",
+            "original_language": "en",
+            "original_title": "Mamma Mia!",
+            "overview": "An independent, single mother who owns a small hotel on a Greek island is about to marry off the spirited young daughter she's raised alone. But, the daughter has secretly invited three of her mother's ex-lovers in the hopes of finding her biological father.",
+            "popularity": 16.025,
+            "poster_path": "/gOm2iMMbC6EonrFzmSQ8xvCa4Ei.jpg",
+            "production_companies": [
+                {
+                    "id": 34441,
+                    "logo_path": null,
+                    "name": "Littlestar",
+                    "origin_country": "GB"
+                },
+                {
+                    "id": 4171,
+                    "logo_path": "/ip8rzankhLLhJGGkvfCirfUM26d.png",
+                    "name": "Playtone",
+                    "origin_country": "US"
+                },
+                {
+                    "id": 2655,
+                    "logo_path": null,
+                    "name": "Internationale Filmproduktion Richter",
+                    "origin_country": "DE"
+                }
+            ],
+            "production_countries": [
+                {
+                    "iso_3166_1": "DE",
+                    "name": "Germany"
+                },
+                {
+                    "iso_3166_1": "GB",
+                    "name": "United Kingdom"
+                },
+                {
+                    "iso_3166_1": "US",
+                    "name": "United States of America"
+                }
+            ],
+            "release_date": "2008-07-02",
+            "revenue": 609841637,
+            "runtime": 108,
+            "spoken_languages": [
+                {
+                    "iso_639_1": "en",
+                    "name": "English"
+                },
+                {
+                    "iso_639_1": "el",
+                    "name": "ελληνικά"
+                }
+            ],
+            "status": "Released",
+            "tagline": "Take a trip down the aisle you'll never forget",
+            "title": "Mamma Mia!",
+            "video": false,
+            "vote_average": 6.9,
+            "vote_count": 4079
+        };
+        resolve(responseJson);
+    })
+    // return fetch(movieUri)
+    //     .then((response) => response.json())
+    //     .then((responseJson) => {
+    //         return responseJson;
+    //     })
+    //     .catch((error) => {
+    //         console.error(error);
+    //     });
 }
 
 export function storeMovie() {

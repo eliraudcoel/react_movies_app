@@ -26,7 +26,6 @@ export class Movies extends Component {
           <MovieCard
             movie={item}
             goToNextScreen={() => {
-              console.log(item.imdbID);
               this.state.navigation.navigate('Movie', { movieId: item.imdbID })
             }}
           />

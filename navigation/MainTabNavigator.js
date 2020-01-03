@@ -29,11 +29,8 @@ const HomeStack = createStackNavigator(
   {
     Home: {
       screen: HomeScreen,
-      navigationOptions: ({ navigation }) => {
+      navigationOptions: () => {
         return {
-          headerStyle: {
-            backgroundColor: "#ddd",
-          },
           header: null,
         }
       }
@@ -42,13 +39,14 @@ const HomeStack = createStackNavigator(
       screen: MovieScreen,
       navigationOptions: ({ navigation }) => {
         return {
-          // headerTintColor: Theme.COLOR.HIGHLIGHT,
+          // headerTintColor: Colors.lightColor,
           // headerStyle: {
-          //   backgroundColor: Theme.COLOR.PRIMARY,
+          //   backgroundColor: "rgba(52, 52, 52, alpha)",
           // },
-          headerTitleStyle: {
-            flex: 1
-          },
+          // headerTitleStyle: {
+          //   flex: 1
+          // },
+          header: null,
           title: navigation.getParam('title'),
         }
       }

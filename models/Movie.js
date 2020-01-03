@@ -7,6 +7,7 @@ export default class Movie {
     backdropPath = null;
     voteAverage = null;
     releaseDate = null;
+    tagline = null;
 
     constructor(params) {
         this.imdbID = this.imdbID || params.id;
@@ -17,5 +18,6 @@ export default class Movie {
         this.backdropPath = this.backdropPath || "https://image.tmdb.org/t/p/original" + params.backdrop_path;
         this.voteAverage = this.voteAverage || params.vote_average;
         this.releaseDate = this.releaseDate || params.release_date;
+        this.tagline = this.tagline || params.tagline;
     }
 }

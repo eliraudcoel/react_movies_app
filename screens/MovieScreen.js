@@ -2,12 +2,19 @@ import React, { Component } from 'react';
 import {
     StyleSheet,
     SafeAreaView,
-    Image,
+    StatusBar,
     View,
+    Platform,
+    ScrollView,
+    Dimensions,
+    Text,
 } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import { List, ListItem, Image } from 'react-native-elements';
+import ParallaxScrollView from 'react-native-parallax-scrollview';
+
 import { getMovieById } from '../utils/Api';
 import Movie from '../models/Movie';
+import Colors from '../constants/Colors';
 
 export class MovieScreen extends Component {
     constructor(props) {
@@ -30,34 +37,66 @@ export class MovieScreen extends Component {
     }
 
     render() {
+        let { height } = Dimensions.get('window');
+
         return (
-            <SafeAreaView style={styles.container}>
-                {this.state.movie &&
-                    <View style={styles.movieContainer}>
-                        <Image
-                            source={{ uri: this.state.movie.backdropPath }}
-                            style={{ width: "100%", height: 200, resizeMode: "contain" }}
-                        />
-                        <List>
-                            <ListItem title={this.state.movie.overview} />
-                        </List>
+            <ParallaxScrollView
+                windowHeight={height * 0.5}
+                backgroundSource={{ uri: this.state.movie && this.state.movie.backdropPath }}
+                navBarTitle='Custom Title'
+                navBarTitleColor='white'
+                navBarColor={"rgba(0, 0, 0, 0.20)"}
+                navBarHeight={88}
+                headerView={(
+                    <View style={styles.headerView}>
+                        <View style={styles.headerTextView}>
+                            <Text style={styles.headerTextViewTitle}>My App</Text>
+                            <Text style={styles.headerTextViewSubtitle}>Custom Header View</Text>
+                        </View>
                     </View>
-                }
-            </SafeAreaView>
-        )
-    };
+                )}
+            >
+                <ScrollView style={{ flex: 1, backgroundColor: 'rgba(228, 117, 125, 1)' }}>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    </View>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    </View>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    </View>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    </View>
+                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    </View>
+                </ScrollView>
+            </ParallaxScrollView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
+    headerView: {
+        backgroundColor: "rgba(0, 0, 0, 0.81)",
     },
-    movieContainer: {
-        flex: 1,
-        flexDirection: "column",
-        // justifyContent: "center"
-    }
+    headerTextView: {
+        backgroundColor: 'transparent',
+    },
+    headerTextViewTitle: {
+        fontSize: 35,
+        color: 'white',
+        fontWeight: '300',
+        paddingBottom: 10,
+        textAlign: 'center'
+    },
+    headerTextViewSubtitle: {
+        fontSize: 20,
+        color: 'white',
+        fontWeight: '300'
+    },
 });
 
 export default MovieScreen;

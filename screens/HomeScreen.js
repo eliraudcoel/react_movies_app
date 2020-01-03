@@ -76,7 +76,7 @@ export class HomeScreen extends Component {
 
     render() {
         return (
-            <SafeAreaView style={[styles.container, { backgroundColor: Colors.tintColor }]}>
+            <SafeAreaView style={styles.container}>
                 <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
                 <Search
                     updateCallback={this.updateSearch}
@@ -106,7 +106,7 @@ export class HomeScreen extends Component {
                     }}
                 />
 
-                <View style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
+                <View style={styles.pageContainer}>
                     {this.state.movies && this.state.movies.length > 0 ? (
                         <Movies movies={this.state.movies} navigation={this.props.navigation} />
                     ) : (
@@ -136,7 +136,11 @@ export class HomeScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: Colors.tintColor
+    },
+    pageContainer: {
+        flex: 1,
+        backgroundColor: Colors.whiteColor
     },
     noFilmContainer: {
         paddingTop: 10,
