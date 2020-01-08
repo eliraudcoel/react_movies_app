@@ -1,6 +1,7 @@
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, Button } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import { Icon } from 'react-native-elements';
 
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
@@ -39,14 +40,21 @@ const HomeStack = createStackNavigator(
       screen: MovieScreen,
       navigationOptions: ({ navigation }) => {
         return {
-          // headerTintColor: Colors.lightColor,
-          // headerStyle: {
-          //   backgroundColor: "rgba(52, 52, 52, alpha)",
-          // },
-          // headerTitleStyle: {
-          //   flex: 1
-          // },
-          header: null,
+          headerTransparent: true,
+          headerTintColor: Colors.lightColor,
+          headerStyle: {
+            borderBottomWidth: 0,
+            backgroundColor: Colors.blackLighter
+          },
+          headerRight: <Icon
+            type="ionicon"
+            size={26}
+            name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+            color={navigation.getParam('isFavorite') ? 'red' : Colors.whiteColor}
+            underlayColor={Colors.transparent}
+            containerStyle={{paddingRight: 15}}
+            onPress={() => navigation.getParam('likeUnlike')()}
+          />,
           title: navigation.getParam('title'),
         }
       }
@@ -59,9 +67,9 @@ HomeStack.navigationOptions = {
   tabBarLabel: 'Movies',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      family={"material"}
+      type='material'
       focused={focused}
-      name={"local-movies"}
+      name='local-movies'
     />
   ),
 };
@@ -82,7 +90,7 @@ LinksStack.navigationOptions = {
   tabBarLabel: 'Likes',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      family={"ionicons"}
+      type='ionicon'
       focused={focused}
       name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
     />
@@ -105,7 +113,7 @@ SettingsStack.navigationOptions = {
   tabBarLabel: 'Settings',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
-      family={"ionicons"}
+      type='ionicon'
       focused={focused}
       name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
     />

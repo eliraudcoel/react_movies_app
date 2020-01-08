@@ -8,7 +8,7 @@ import {
     StatusBar,
 } from 'react-native';
 
-import Icon from '../components/Icon';
+import { Icon } from 'react-native-elements';
 import { getMovies, searchBy } from '../utils/Api';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
@@ -24,18 +24,18 @@ export class HomeScreen extends Component {
                 {
                     imdbID: 11631,
                     title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
-                    releaseDate: "2019",
+                    releaseDate: "2019-02-05",
                     posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
                 },
                 {
                     imdbID: 456,
                     title: "Mamma",
-                    releaseDate: "2019",
+                    releaseDate: "2019-02-05",
                 },
                 {
                     imdbID: 789,
                     title: "Mamma",
-                    releaseDate: "2019",
+                    releaseDate: "2019-02-05",
                     posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
                 }
             ],
@@ -85,7 +85,6 @@ export class HomeScreen extends Component {
                         backgroundColor: Colors.tintColor,
                         borderBottomWidth: 0,
                         borderTopWidth: 0,
-                        // padding: 0,
                     }}
                     inputContainerStyle={{
                         backgroundColor: Colors.tintColor,
@@ -120,7 +119,7 @@ export class HomeScreen extends Component {
                 {this.state.movieAdded &&
                     <View style={styles.tabBarInfoContainer}>
                         <Icon
-                            family={"ionicons"}
+                            type='ionicon'
                             size={26}
                             name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
                             color={"red"}

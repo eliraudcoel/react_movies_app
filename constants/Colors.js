@@ -25,4 +25,6 @@ export default {
 
   tabIconDefault: lightTintColorDarker,
   tabIconSelected: lightColor,
+
+  blackLighter: "rgba(0, 0, 0, 0.30)",
 };

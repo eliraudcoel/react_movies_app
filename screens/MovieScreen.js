@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import {
     StyleSheet,
-    SafeAreaView,
-    StatusBar,
     View,
     Platform,
     ScrollView,
     Dimensions,
     Text,
+    Image,
 } from 'react-native';
-import { List, ListItem, Image } from 'react-native-elements';
 import ParallaxScrollView from 'react-native-parallax-scrollview';
 
 import { getMovieById } from '../utils/Api';
 import Movie from '../models/Movie';
 import Colors from '../constants/Colors';
+import { Icon } from 'react-native-elements';
 
 export class MovieScreen extends Component {
     constructor(props) {
@@ -31,59 +30,78 @@ export class MovieScreen extends Component {
         return getMovieById(this.state.movieId)
             .then((movieJson) => {
                 let movie = new Movie(movieJson);
-                this.props.navigation.setParams({ title: movie.title });
+                this.props.navigation.setParams({
+                    title: movie.title,
+                    likeUnlike: this.likeUnlike.bind(this),
+                    isFavorite: this.state.isFavorite
+                });
                 this.setState({ movie })
             });
     }
 
+    date = () => {
+        let options = { year: 'numeric', month: 'short', day: 'numeric' };
+        return new Date(this.state.movie.releaseDate).toLocaleDateString('fr-FR', options);
+    }
+
+    goBack = () => {
+        this.props.navigation.goBack();
+    }
+
+    likeUnlike = () => {
+        // of connected -> post like
+        // of unconnected -> connection screen && post like
+        this.setState({
+            isFavorite: !this.state.isFavorite
+        });
+    }
+
     render() {
         let { height } = Dimensions.get('window');
+        let { movie } = this.state;
 
         return (
-            <ParallaxScrollView
-                windowHeight={height * 0.5}
-                backgroundSource={{ uri: this.state.movie && this.state.movie.backdropPath }}
-                navBarTitle='Custom Title'
-                navBarTitleColor='white'
-                navBarColor={"rgba(0, 0, 0, 0.20)"}
-                navBarHeight={88}
-                headerView={(
-                    <View style={styles.headerView}>
-                        <View style={styles.headerTextView}>
-                            <Text style={styles.headerTextViewTitle}>My App</Text>
-                            <Text style={styles.headerTextViewSubtitle}>Custom Header View</Text>
-                        </View>
+            <View style={styles.container}>
+                <Image
+                    style={{ height: height * 0.4 }}
+                    source={{ uri: movie && movie.backdropPath }}
+                />
+
+                <ScrollView style={styles.scrollView}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20, color: 'black' }}>{movie && this.date()}</Text>
                     </View>
-                )}
-            >
-                <ScrollView style={{ flex: 1, backgroundColor: 'rgba(228, 117, 125, 1)' }}>
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
-                    </View>
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
-                    </View>
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
-                    </View>
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
-                    </View>
-                    <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 32, color: 'white' }}>Custom view</Text>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 20, color: 'black' }}>{movie && movie.overview}</Text>
                     </View>
                 </ScrollView>
-            </ParallaxScrollView>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    headerView: {
-        backgroundColor: "rgba(0, 0, 0, 0.81)",
+    container: {
+        flex: 1,
+        backgroundColor: Colors.transparent,
     },
     headerTextView: {
         backgroundColor: 'transparent',
+    },
+    navBarView: {
+        // flex: 1,
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        paddingTop: 45,
+        paddingBottom: 35,
+        backgroundColor: "rgba(0, 0, 0, 0.30)",
+    },
+    navbartText: {
+        fontSize: 20,
+        color: 'white',
+        fontWeight: '600',
+        textAlign: 'center'
     },
     headerTextViewTitle: {
         fontSize: 35,
@@ -97,6 +115,17 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: '300'
     },
+    nabBarIcon: {
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    scrollView: {
+        flex: 1,
+        backgroundColor: Colors.greyColor,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        top: -10,
+    }
 });
 
 export default MovieScreen;

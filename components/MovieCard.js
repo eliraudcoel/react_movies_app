@@ -20,6 +20,10 @@ export default class MovieCard extends Component {
   }
 
   render() {
+    let { releaseDate } = this.state.movie;
+    let options = { year: 'numeric', month: 'short', day: 'numeric' };
+    let date = new Date(releaseDate).toLocaleDateString('fr-FR', options);
+
     return (
       <ListItem
         onPress={() => this.state.goToNextScreen()}
@@ -27,8 +31,7 @@ export default class MovieCard extends Component {
         title={this.state.movie.title}
         titleProps={{ numberOfLines: 1 }}
         titleStyle={{ color: Colors.tintColor }}
-        subtitle={this.state.movie.releaseDate}
-        // subtitleStyle={{ color: Colors.greyColor }}
+        subtitle={date}
         rightIcon={{
           name: Platform.OS === 'ios' ? 'ios-heart' : 'md-heart',
           type: "ionicon",
