@@ -59,38 +59,23 @@ export class MovieScreen extends Component {
         let { movie } = this.state;
 
         return (
-            <View style={styles.container}>
-                <ParallaxView
-                    backgroundSource={{ uri: movie && movie.backdropPath }}
-                    windowHeight={300}
-                    scrollableViewStyle={{ backgroundColor: 'red' }}
-                >
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20, color: 'black' }}>{movie && this.date()}</Text>
-                        <Text style={{ fontSize: 20, color: 'black' }}>{movie && movie.overview}</Text>
-                    </View>
-                </ParallaxView>
-                {/* <Image
-                    style={{ height: height * 0.4 }}
-                    source={{ uri: movie && movie.backdropPath }}
-                /> */}
-
-                {/* <ScrollView style={styles.scrollView}>
-
-                </ScrollView> */}
-            </View>
+            <ParallaxView
+                backgroundSource={{ uri: movie && movie.backdropPath }}
+                windowHeight={height * 0.4}
+                scrollableViewStyle={styles.scrollView}
+            >
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 20, color: 'black' }}>{movie && this.date()}</Text>
+                    <Text style={{ fontSize: 20, color: 'black' }}>{movie && movie.overview}</Text>
+                </View>
+            </ParallaxView>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.transparent,
-    },
     scrollView: {
         flex: 1,
-        backgroundColor: Colors.greyColor,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         top: -10,
