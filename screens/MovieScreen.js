@@ -7,6 +7,7 @@ import {
     Text,
     Image,
 } from 'react-native';
+import { Button } from 'react-native-elements';
 
 import { getMovieById } from '../utils/Api';
 import Movie from '../models/Movie';
@@ -62,11 +63,16 @@ export class MovieScreen extends Component {
             <ParallaxView
                 backgroundSource={{ uri: movie && movie.backdropPath }}
                 windowHeight={height * 0.4}
-                scrollableViewStyle={styles.scrollView}
+                scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
+                style={styles.borderRadius}
             >
-                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 20, color: 'black' }}>{movie && this.date()}</Text>
-                    <Text style={{ fontSize: 20, color: 'black' }}>{movie && movie.overview}</Text>
+                <View style={[styles.containerView, styles.borderRadius]}>
+                    <Text style={styles.containerText}>{movie && this.date()}</Text>
+                    <Text style={styles.containerText}>{movie && movie.overview}</Text>
+                    <Button
+                        title="Voir les commentaires"
+                        type="outline"
+                    />
                 </View>
             </ParallaxView>
         );
@@ -74,11 +80,24 @@ export class MovieScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
+    borderRadius: {
         flex: 1,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        top: -10,
+    },
+    scrollView: {
+        top: -20,
+    },
+    containerView: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    containerText: {
+        fontSize: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        color: 'black'
     }
 });
 

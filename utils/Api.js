@@ -10,7 +10,7 @@ export function getMovies() {
 
 export function getMovieById(movieId) {
     const movieUri = `https://api.themoviedb.org/${API_VERSION}/movie/${movieId}?api_key=${API_KEY}`;
-
+    /*
     return new Promise((resolve, reject) => {
         let responseJson = {
             "adult": false,
@@ -95,15 +95,15 @@ export function getMovieById(movieId) {
             "vote_count": 4079
         };
         resolve(responseJson);
-    })
-    // return fetch(movieUri)
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-    //         return responseJson;
-    //     })
-    //     .catch((error) => {
-    //         console.error(error);
-    //     });
+    })*/
+    return fetch(movieUri)
+        .then((response) => response.json())
+        .then((responseJson) => {
+            return responseJson;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
 }
 
 export function storeMovie() {
