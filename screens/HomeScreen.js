@@ -19,26 +19,26 @@ export class HomeScreen extends Component {
         super(props);
 
         this.state = {
-            movies: null,
-            // movies: [
-            //     {
-            //         imdbID: 11631,
-            //         title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
-            //         releaseDate: "2019-02-05",
-            //         posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-            //     },
-            //     {
-            //         imdbID: 456,
-            //         title: "Mamma",
-            //         releaseDate: "2019-02-05",
-            //     },
-            //     {
-            //         imdbID: 789,
-            //         title: "Mamma",
-            //         releaseDate: "2019-02-05",
-            //         posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-            //     }
-            // ],
+            // movies: null,
+            movies: [
+                {
+                    imdbID: 11631,
+                    title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
+                    releaseDate: "2019-02-05",
+                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+                },
+                {
+                    imdbID: 456,
+                    title: "Mamma",
+                    releaseDate: "2019-02-05",
+                },
+                {
+                    imdbID: 789,
+                    title: "Mamma",
+                    releaseDate: "2019-02-05",
+                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+                }
+            ],
             showLoading: false,
         };
     }

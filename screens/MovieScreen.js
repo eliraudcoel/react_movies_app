@@ -43,16 +43,19 @@ export class MovieScreen extends Component {
         return new Date(this.state.movie.releaseDate).toLocaleDateString('fr-FR', options);
     }
 
-    goBack = () => {
-        this.props.navigation.goBack();
-    }
-
     likeUnlike = () => {
-        // of connected -> post like
-        // of unconnected -> connection screen && post like
-        this.setState({
-            isFavorite: !this.state.isFavorite
-        });
+        if (this.state.user) {
+            // of connected -> post like
+            this.setState({
+                isFavorite: !this.state.isFavorite
+            });
+        } else {
+            // of unconnected -> connection screen && post like
+            this.props.navigation.navigate('Login', {
+                action: this.state.isFavorite ? 'unlike' : 'like',
+                movieId: this.state.movieId
+            });
+        }
     }
 
     render() {

@@ -3,12 +3,13 @@ import { Platform, Button } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
+import Colors from '../constants/Colors';
 import TabBarIcon from '../components/TabBarIcon';
+
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
-import { MovieScreen } from '../screens/MovieScreen';
-import Colors from '../constants/Colors';
+import MovieScreen from '../screens/MovieScreen';
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
