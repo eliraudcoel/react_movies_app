@@ -34,6 +34,7 @@ const HomeStack = createStackNavigator(
       navigationOptions: () => {
         return {
           header: null,
+          headerBackTitle: null,
         }
       }
     },
@@ -41,6 +42,7 @@ const HomeStack = createStackNavigator(
       screen: MovieScreen,
       navigationOptions: ({ navigation }) => {
         return {
+          headerBackTitle: null,
           headerTransparent: true,
           headerTintColor: Colors.lightColor,
           headerStyle: {
@@ -53,7 +55,7 @@ const HomeStack = createStackNavigator(
             name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
             color={navigation.getParam('isFavorite') ? 'red' : Colors.whiteColor}
             underlayColor={Colors.transparent}
-            containerStyle={{paddingRight: 15}}
+            containerStyle={{ paddingRight: 15 }}
             onPress={() => navigation.getParam('likeUnlike')()}
           />,
           title: navigation.getParam('title'),

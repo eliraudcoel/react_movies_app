@@ -22,7 +22,6 @@ export class SignInScreen extends Component {
         };
     }
 
-
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',

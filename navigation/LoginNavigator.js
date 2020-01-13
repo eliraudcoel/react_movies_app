@@ -1,5 +1,4 @@
 import { createStackNavigator } from 'react-navigation';
-
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 
@@ -14,17 +13,28 @@ const ConnectionStack = createStackNavigator(
       screen: SignInScreen,
       navigationOptions: () => {
         return {
-          // header: null,
+          header: null,
+          headerBackTitle: null,
         }
       }
     },
     SignUp: {
       screen: SignUpScreen,
+      navigationOptions: () => {
+        return {
+          headerBackTitle: null,
+          headerTransparent: true,
+          headerTintColor: Colors.lightColor,
+          headerStyle: {
+            borderBottomWidth: 0,
+            backgroundColor: Colors.transparent
+          },
+        }
+      }
     },
   },
   {
     initialRouteName: 'SignIn',
-    headerMode: 'none',
     mode: 'modal',
   }
 );
