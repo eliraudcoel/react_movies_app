@@ -51,7 +51,7 @@ export class MovieScreen extends Component {
             });
         } else {
             // of unconnected -> connection screen && post like
-            this.props.navigation.navigate('Login', {
+            this.props.navigation.navigate('SignIn', {
                 action: this.state.isFavorite ? 'unlike' : 'like',
                 movieId: this.state.movieId
             });

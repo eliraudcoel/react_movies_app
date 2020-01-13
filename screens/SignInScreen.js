@@ -12,7 +12,7 @@ import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 
-export class LoginScreen extends Component {
+export class SignInScreen extends Component {
     constructor(props) {
         super(props);
         const { navigation } = this.props;
@@ -51,6 +51,10 @@ export class LoginScreen extends Component {
         this.setState({ buttonStyle: {} })
     }
 
+    goToSignUp = () => {
+        this.props.navigation.navigate('SignUp')
+    }
+
     render() {
         let { height } = Dimensions.get('window');
 
@@ -63,7 +67,7 @@ export class LoginScreen extends Component {
                 style={styles.borderRadius}
                 bottomContainer={(
                     <Button
-                        title="CONNEXION" type="solid"
+                        title="JE ME CONNECTE" type="solid"
                         buttonStyle={[styles.button, this.state.buttonStyle]}
                         titleStyle={styles.buttonText}
                     />
@@ -72,20 +76,35 @@ export class LoginScreen extends Component {
                 <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
                 <View style={[styles.containerView, styles.borderRadius]}>
                     <Text style={styles.text}>Connectez</Text>
-                    <Text style={styles.text}>vous</Text>
+                    <Text style={styles.text}>Vous</Text>
+
                     <View style={styles.formContainer}>
                         <Input
                             placeholder='Email'
                             autoCapitalize='none'
                             autoCompleteType='email'
+                            containerStyle={styles.divider}
                         />
-                        <View style={styles.divider}></View>
                         <Input
                             placeholder='Mot de passe'
                             autoCapitalize='none'
                             autoCompleteType='password'
                             secureTextEntry={true}
                         />
+                        <View style={styles.link}>
+                            <Button
+                                title="Mot de passe oublié ?"
+                                type="clear"
+                                titleStyle={{ textDecorationLine: 'underline' }}
+                            />
+                        </View>
+                        <View style={styles.link}>
+                            <Button
+                                title="S'inscrire"
+                                type="clear"
+                                onPress={() => this.goToSignUp()}
+                            />
+                        </View>
                     </View>
                 </View>
 
@@ -104,14 +123,13 @@ const styles = StyleSheet.create({
         top: -20,
     },
     textContainer: {
-        // backgroundColor: "red",
         paddingTop: 20,
         paddingLeft: 20,
     },
     text: {
         fontSize: 50,
         textAlign: "left",
-        color: Colors.tintColor
+        color: Colors.lightTintColorDarker
     },
     formContainer: {
         flex: 1,
@@ -124,7 +142,10 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     divider: {
-        height: 20,
+        paddingBottom: 20,
+    },
+    link: {
+        paddingTop: 30,
     },
     button: {
         backgroundColor: Colors.tintColor,
@@ -136,4 +157,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginScreen;
+export default SignInScreen;

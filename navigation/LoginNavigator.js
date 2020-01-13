@@ -1,23 +1,29 @@
 import { createStackNavigator } from 'react-navigation';
 
-import LoginScreen from "../screens/LoginScreen";
+import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
+
+import Colors from '../constants/Colors';
 
 /*
  * SIGNUP / LOGIN
 */
 const ConnectionStack = createStackNavigator(
   {
-    Login: {
-      screen: LoginScreen,
+    SignIn: {
+      screen: SignInScreen,
       navigationOptions: () => {
         return {
-          header: null,
+          // header: null,
         }
       }
     },
+    SignUp: {
+      screen: SignUpScreen,
+    },
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'SignIn',
     headerMode: 'none',
     mode: 'modal',
   }
