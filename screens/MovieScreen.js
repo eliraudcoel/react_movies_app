@@ -75,6 +75,7 @@ export class MovieScreen extends Component {
                     <Button
                         title="Voir les commentaires"
                         type="outline"
+                        style={styles.button}
                     />
                 </View>
             </ParallaxView>
@@ -101,6 +102,9 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
         color: 'black'
+    },
+    button: {
+        paddingTop: 10,
     }
 });
 

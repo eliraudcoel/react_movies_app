@@ -10,6 +10,7 @@ import {
     View,
     ScrollView,
     Animated,
+    KeyboardAvoidingView,
 } from 'react-native';
 
 const ScrollableMixin = require('react-native-scrollable-mixin');
@@ -35,6 +36,7 @@ var ParallaxView = createReactClass({
         header: PropTypes.node,
         blur: PropTypes.string,
         contentInset: PropTypes.object,
+        bottomContainer: PropTypes.node,
     },
 
     getDefaultProps: function () {
@@ -126,7 +128,11 @@ var ParallaxView = createReactClass({
             this.state.onScroll(e);
         } : this.state.onScroll;
         return (
-            <View style={[styles.container, style]}>
+            <KeyboardAvoidingView
+                style={[styles.container, style]}
+                behavior="padding"
+                enabled
+            >
                 {this.renderBackground()}
                 <ScrollView
                     ref={component => { this._scrollView = component; }}
@@ -139,7 +145,8 @@ var ParallaxView = createReactClass({
                         {this.props.children}
                     </View>
                 </ScrollView>
-            </View>
+                {this.props.bottomContainer}
+            </KeyboardAvoidingView>
         );
     }
 });

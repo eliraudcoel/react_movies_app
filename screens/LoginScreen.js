@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
     StyleSheet,
-    SafeAreaView,
+    Text,
     StatusBar,
     View,
     Dimensions,
-    Image,
+    Keyboard,
 } from 'react-native';
-import { Input, Icon } from 'react-native-elements';
+import { Input, Button } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
@@ -18,10 +18,37 @@ export class LoginScreen extends Component {
         const { navigation } = this.props;
 
         this.state = {
+            buttonStyle: {}
         };
     }
 
-    componentWillMount() {
+
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this._keyboardDidShow,
+        );
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this._keyboardDidHide,
+        );
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+
+    _keyboardDidShow = () => {
+        this.setState({
+            buttonStyle: {
+                paddingBottom: 20,
+            }
+        })
+    };
+
+    _keyboardDidHide = () => {
+        this.setState({ buttonStyle: {} })
     }
 
     render() {
@@ -34,44 +61,34 @@ export class LoginScreen extends Component {
                 windowHeight={height * 0.4}
                 scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
                 style={styles.borderRadius}
+                bottomContainer={(
+                    <Button
+                        title="CONNEXION" type="solid"
+                        buttonStyle={[styles.button, this.state.buttonStyle]}
+                        titleStyle={styles.buttonText}
+                    />
+                )}
             >
                 <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
                 <View style={[styles.containerView, styles.borderRadius]}>
-                    <Input
-                        placeholder='Email'
-                    // leftIcon={
-                    //     <Icon
-                    //         name='mail'
-                    //         size={24}
-                    //         color='black'
-                    //     />
-                    // }
-                    // containerStyle={{
-                    //     paddingLeft: 0
-                    // }}
-                    // inputStyle={{
-                    //     backgroundColor: 'green',
-                    //     paddingLeft: 20,
-                    // }}
-                    // leftIconContainerStyle={{
-                    //     left: 0,
-                    //     backgroundColor: 'red'
-                    // }}
-                    />
-                    <View style={styles.divider}></View>
-                    <Input
-                        placeholder='Mot de passe'
-                    // leftIcon={
-                    //     <Icon
-                    //         name='lock'
-                    //         size={24}
-                    //         color='black'
-                    //     />
-                    // }
-                    // containerStyle={{backgroundColor: 'green'}}
-                    // leftIconContainerStyle={{backgroundColor: 'red'}}
-                    />
+                    <Text style={styles.text}>Connectez</Text>
+                    <Text style={styles.text}>vous</Text>
+                    <View style={styles.formContainer}>
+                        <Input
+                            placeholder='Email'
+                            autoCapitalize='none'
+                            autoCompleteType='email'
+                        />
+                        <View style={styles.divider}></View>
+                        <Input
+                            placeholder='Mot de passe'
+                            autoCapitalize='none'
+                            autoCompleteType='password'
+                            secureTextEntry={true}
+                        />
+                    </View>
                 </View>
+
             </ParallaxView>
         );
     }
@@ -86,21 +103,36 @@ const styles = StyleSheet.create({
     scrollView: {
         top: -20,
     },
+    textContainer: {
+        // backgroundColor: "red",
+        paddingTop: 20,
+        paddingLeft: 20,
+    },
+    text: {
+        fontSize: 50,
+        textAlign: "left",
+        color: Colors.tintColor
+    },
+    formContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     containerView: {
         flex: 1,
         height: 500,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 20,
-    },
-    containerText: {
-        fontSize: 20,
-        paddingTop: 10,
-        paddingBottom: 10,
-        color: 'black'
     },
     divider: {
         height: 20,
+    },
+    button: {
+        backgroundColor: Colors.tintColor,
+        paddingBottom: 30,
+        paddingTop: 20,
+    },
+    buttonText: {
+        fontSize: 20,
     }
 });
 
