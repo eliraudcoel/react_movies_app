@@ -6,6 +6,7 @@ import {
     View,
     SafeAreaView,
     StatusBar,
+    AsyncStorage,
 } from 'react-native';
 
 import { Icon } from 'react-native-elements';
@@ -44,18 +45,30 @@ export class HomeScreen extends Component {
     }
 
     componentWillMount() {
+        return this.isConnected()
+            .then((accessToken) => {
+                console.log("USER CONNECTED", accessToken);
+                // TODO : store to Context
+            })
         // return getMovies()
         //     .then((movies) => {
         //         this.setState({ movies });
         //     });
     }
 
+    isConnected = () => {
+        return AsyncStorage.getItem('access_token')
+            .catch((error) => {
+                console.log("ERROR ON STORAGE", error);
+            })
+    }
+
+
     updateSearch = (searchText) => {
-        this.setState({ searchText });
+        this.setState({ searchText, showLoading: true });
 
         return new Promise((resolve, reject) => {
             if (searchText.length > 0 && searchText.length % 3 === 0) {
-                this.state.showLoading = true;
                 return searchBy(searchText)
                     .then((searchList) => {
                         this.setState({ movies: searchList, showLoading: false });
@@ -109,10 +122,10 @@ export class HomeScreen extends Component {
                     {this.state.movies && this.state.movies.length > 0 ? (
                         <Movies movies={this.state.movies} navigation={this.props.navigation} />
                     ) : (
-                        <View style={styles.noFilmContainer}>
-                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                        </View>
-                    )}
+                            <View style={styles.noFilmContainer}>
+                                <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                            </View>
+                        )}
                 </View>
 
                 {/* For adding */}

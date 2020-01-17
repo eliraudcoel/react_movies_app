@@ -5,20 +5,24 @@ import {
     StatusBar,
     View,
     Dimensions,
+    AsyncStorage,
     Keyboard,
 } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
+import { signIn } from '../utils/Api';
 
 export class SignInScreen extends Component {
     constructor(props) {
         super(props);
-        const { navigation } = this.props;
 
         this.state = {
-            buttonStyle: {}
+            buttonStyle: {},
+            showLoading: false,
+            email: '',
+            password: '',
         };
     }
 
@@ -54,6 +58,39 @@ export class SignInScreen extends Component {
         this.props.navigation.navigate('SignUp')
     }
 
+    onChangeEmail = (email) => {
+        this.setState({ email })
+    }
+
+    onChangePassword = (password) => {
+        this.setState({ password })
+    }
+
+    storeToken = (accessToken) => {
+        return AsyncStorage.setItem('access_token', accessToken)
+            .catch((error) => {
+                console.log("ERROR ON STORAGE", error);
+            })
+    }
+
+    signIn = () => {
+        this.setState({ showLoading: true });
+        console.log(this.state.email, this.state.password);
+
+        return signIn(this.state.email, this.state.password)
+            .then((response) => {
+                console.log("RESPONSE", response);
+                this.setState({ showLoading: false });
+                return this.storeToken(response.access_token)
+                    .then(() => {
+                        this.props.navigation.navigate('Home');
+                    });
+            })
+            .catch((error) => {
+                reject(error);
+            })
+    }
+
     render() {
         let { height } = Dimensions.get('window');
 
@@ -69,6 +106,8 @@ export class SignInScreen extends Component {
                         title="JE ME CONNECTE" type="solid"
                         buttonStyle={[styles.button, this.state.buttonStyle]}
                         titleStyle={styles.buttonText}
+                        onPress={() => this.signIn()}
+                        loading={this.state.showLoading}
                     />
                 )}
             >
@@ -83,12 +122,14 @@ export class SignInScreen extends Component {
                             autoCapitalize='none'
                             autoCompleteType='email'
                             containerStyle={styles.divider}
+                            onChangeText={text => this.onChangeEmail(text)}
                         />
                         <Input
                             placeholder='Mot de passe'
                             autoCapitalize='none'
                             autoCompleteType='password'
                             secureTextEntry={true}
+                            onChangeText={text => this.onChangePassword(text)}
                         />
                         <View style={styles.link}>
                             <Button
