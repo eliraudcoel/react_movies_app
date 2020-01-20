@@ -49,11 +49,13 @@ export class HomeScreen extends Component {
             .then((accessToken) => {
                 console.log("USER CONNECTED", accessToken);
                 // TODO : store to Context
+                
+                // return getMovies()
+                //     .then((movies) => {
+                //         this.setState({ movies });
+                //     });
             })
-        // return getMovies()
-        //     .then((movies) => {
-        //         this.setState({ movies });
-        //     });
+
     }
 
     isConnected = () => {

@@ -7,8 +7,9 @@ import {
     Dimensions,
     AsyncStorage,
     Keyboard,
+    Platform,
 } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
@@ -17,12 +18,15 @@ import { signIn } from '../utils/Api';
 export class SignInScreen extends Component {
     constructor(props) {
         super(props);
+        const { navigation } = props;
 
         this.state = {
             buttonStyle: {},
             showLoading: false,
             email: '',
             password: '',
+            movieId: navigation.getParam('movieId'),
+            action: navigation.getParam('action')
         };
     }
 
@@ -91,6 +95,14 @@ export class SignInScreen extends Component {
             })
     }
 
+    goBack = () => {
+        console.log("GO BACK");
+        // this.props.navigation.goBack();
+        this.props.navigation.navigate('Movie', {
+            movieId: this.state.movieId,
+        })
+    }
+
     render() {
         let { height } = Dimensions.get('window');
 
@@ -101,6 +113,19 @@ export class SignInScreen extends Component {
                 windowHeight={height * 0.4}
                 scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
                 style={styles.borderRadius}
+                header={(
+                    <Icon
+                        type='ionicon'
+                        size={70}
+                        name={Platform.OS === 'ios' ? 'ios-close-circle' : 'md-close-circle'}
+                        color={Colors.whiteColor}
+                        containerStyle={{
+                            paddingTop: (height * 0.1),
+                        }}
+                        underlayColor={Colors.transparent}
+                        onPress={() => this.goBack()}
+                    />
+                )}
                 bottomContainer={(
                     <Button
                         title="JE ME CONNECTE" type="solid"
