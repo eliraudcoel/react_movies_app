@@ -42,7 +42,7 @@ export function storeMovies(movies) {
 export function setApiParams(url, params) {
     let uri = url;
     Object.keys(params).map(function (key) {
-        uri = url + "&" + key + "=" + params[key];
+        uri = uri + "&" + key + "=" + params[key];
     });
     return uri;
 }
