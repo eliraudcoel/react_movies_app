@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -12,90 +12,117 @@ import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 
-export class SignUpScreen extends Component {
-    constructor(props) {
-        super(props);
-        const { navigation } = this.props;
+export function SignUpScreen({ navigation }) {
+    // States
+    const [buttonStyle, setButtonStyle] = useState({});
+    const [showLoading, setLoading] = useState(false);
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
+    const [action, setAction] = useState(navigation.getParam('action', null));
 
-        this.state = {
-            buttonStyle: {}
+    const { height } = Dimensions.get('window');
+
+    // Équivalent à componentDidMount plus componentDidUpdate :
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
+
+        return function cleanup() {
+            Keyboard.removeAllListeners('keyboardDidShow');
+            Keyboard.removeAllListeners('keyboardDidHide');
         };
-    }
-
-
-    componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            this._keyboardDidShow,
-        );
-        this.keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            this._keyboardDidHide,
-        );
-    }
-
-    componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-    }
+    }, []);
 
     _keyboardDidShow = () => {
-        this.setState({
-            buttonStyle: {
-                paddingBottom: 20,
-            }
+        setButtonStyle({
+            paddingBottom: 20,
         })
     };
 
     _keyboardDidHide = () => {
-        this.setState({ buttonStyle: {} })
+        setButtonStyle(null);
     }
 
-    render() {
-        let { height } = Dimensions.get('window');
+    goToSignUp = () => {
+        navigation.navigate('SignUp')
+    }
 
-        return (
-            // TODO : make it a component
-            <ParallaxView
-                backgroundSource={BobineImage}
-                windowHeight={height * 0.4}
-                scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
-                style={styles.borderRadius}
-                bottomContainer={(
-                    <Button
-                        title="JE M'INSCRIS" type="solid"
-                        buttonStyle={[styles.button, this.state.buttonStyle]}
-                        titleStyle={styles.buttonText}
+    onChangeEmail = (email) => {
+        setEmail(email);
+    }
+
+    onChangePassword = (password) => {
+        setPassword(password);
+    }
+
+    storeToken = (accessToken) => {
+        return AsyncStorage.setItem('access_token', accessToken)
+            .catch((error) => {
+                console.log("ERROR ON STORAGE", error);
+            })
+    }
+
+    // connect = () => {
+    //     setLoading(true);
+
+    //     return connect(email, password)
+    //         .then((response) => {
+    //             console.log("RESPONSE", response);
+    //             setLoading(false);
+
+    //             return storeToken(response.access_token)
+    //                 .then(() => {
+    //                     navigation.navigate('Home');
+    //                 });
+    //         })
+    //         .catch((error) => {
+    //             reject(error);
+    //         })
+    // }
+
+    return (
+        // TODO : make it a component
+        <ParallaxView
+            backgroundSource={BobineImage}
+            windowHeight={height * 0.4}
+            scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
+            style={styles.borderRadius}
+            bottomContainer={(
+                <Button
+                    title="JE M'INSCRIS" type="solid"
+                    buttonStyle={[styles.button, buttonStyle]}
+                    titleStyle={styles.buttonText}
+                    // onPress={() => connect()}
+                    loading={showLoading}
+                />
+            )}
+        >
+            <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
+            <View style={[styles.containerView, styles.borderRadius]}>
+                <Text style={styles.text}>Connectez</Text>
+                <Text style={styles.text}>Vous</Text>
+
+                <View style={styles.formContainer}>
+                    <Input
+                        placeholder='Email'
+                        autoCapitalize='none'
+                        autoCompleteType='email'
+                        containerStyle={styles.divider}
+                        onChangeText={text => this.onChangeEmail(text)}
                     />
-                )}
-            >
-                <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
-                <View style={[styles.containerView, styles.borderRadius]}>
-                    <Text style={styles.text}>Inscrivez</Text>
-                    <Text style={styles.text}>Vous</Text>
-
-                    <View style={styles.formContainer}>
-                        <Input
-                            placeholder='Email'
-                            autoCapitalize='none'
-                            autoCompleteType='email'
-                            containerStyle={styles.divider}
-                        />
-                        <Input
-                            placeholder='Mot de passe'
-                            autoCapitalize='none'
-                            autoCompleteType='password'
-                            secureTextEntry={true}
-                        />
-                        {/* <View style={styles.link}>
-                            <Button title="S'inscrire" type="clear" />
-                        </View> */}
-                    </View>
+                    <Input
+                        placeholder='Mot de passe'
+                        autoCapitalize='none'
+                        autoCompleteType='password'
+                        secureTextEntry={true}
+                        onChangeText={text => this.onChangePassword(text)}
+                    />
                 </View>
+            </View>
 
-            </ParallaxView>
-        );
-    }
+        </ParallaxView>
+    );
 }
 
 const styles = StyleSheet.create({
