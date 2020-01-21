@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     Text,
@@ -15,59 +15,48 @@ import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 import { signIn } from '../utils/Api';
 
-export class SignInScreen extends Component {
-    constructor(props) {
-        super(props);
-        const { navigation } = props;
+export function SignInScreen({ navigation }) {
+    // States
+    const [buttonStyle, setButtonStyle] = useState({});
+    const [showLoading, setLoading] = useState(false);
+    const [email, setEmail] = useState(null);
+    const [password, setPassword] = useState(null);
+    const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
+    const [action, setAction] = useState(navigation.getParam('action', null));
 
-        this.state = {
-            buttonStyle: {},
-            showLoading: false,
-            email: '',
-            password: '',
-            movieId: navigation.getParam('movieId'),
-            action: navigation.getParam('action')
+    const { height } = Dimensions.get('window');
+
+    // Équivalent à componentDidMount plus componentDidUpdate :
+    useEffect(() => {
+        Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
+        Keyboard.addListener('keyboardDidHide',_keyboardDidHide);
+
+        return function cleanup() {
+            Keyboard.removeAllListeners('keyboardDidShow');
+            Keyboard.removeAllListeners('keyboardDidHide');
         };
-    }
-
-    componentDidMount() {
-        this.keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            this._keyboardDidShow,
-        );
-        this.keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            this._keyboardDidHide,
-        );
-    }
-
-    componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-    }
+    }, []);
 
     _keyboardDidShow = () => {
-        this.setState({
-            buttonStyle: {
-                paddingBottom: 20,
-            }
+        setButtonStyle({
+            paddingBottom: 20,
         })
     };
 
     _keyboardDidHide = () => {
-        this.setState({ buttonStyle: {} })
+        setButtonStyle(null);
     }
 
     goToSignUp = () => {
-        this.props.navigation.navigate('SignUp')
+        navigation.navigate('SignUp')
     }
 
     onChangeEmail = (email) => {
-        this.setState({ email })
+        setEmail(email);
     }
 
     onChangePassword = (password) => {
-        this.setState({ password })
+        setPassword(password);
     }
 
     storeToken = (accessToken) => {
@@ -77,17 +66,17 @@ export class SignInScreen extends Component {
             })
     }
 
-    signIn = () => {
-        this.setState({ showLoading: true });
-        console.log(this.state.email, this.state.password);
+    connect = () => {
+        setLoading(true);
 
-        return signIn(this.state.email, this.state.password)
+        return connect(email, password)
             .then((response) => {
                 console.log("RESPONSE", response);
-                this.setState({ showLoading: false });
-                return this.storeToken(response.access_token)
+                setLoading(false);
+
+                return storeToken(response.access_token)
                     .then(() => {
-                        this.props.navigation.navigate('Home');
+                        navigation.navigate('Home');
                     });
             })
             .catch((error) => {
@@ -98,84 +87,80 @@ export class SignInScreen extends Component {
     goBack = () => {
         console.log("GO BACK");
         // this.props.navigation.goBack();
-        this.props.navigation.navigate('Movie', {
-            movieId: this.state.movieId,
+        navigation.navigate('Movie', {
+            movieId: movieId,
         })
     }
 
-    render() {
-        let { height } = Dimensions.get('window');
+    return (
+        // TODO : make it a component
+        <ParallaxView
+            backgroundSource={BobineImage}
+            windowHeight={height * 0.4}
+            scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
+            style={styles.borderRadius}
+            header={(
+                <Icon
+                    type='ionicon'
+                    size={70}
+                    name={Platform.OS === 'ios' ? 'ios-close-circle' : 'md-close-circle'}
+                    color={Colors.whiteColor}
+                    containerStyle={{
+                        paddingTop: (height * 0.1),
+                    }}
+                    underlayColor={Colors.transparent}
+                    onPress={() => this.goBack()}
+                />
+            )}
+            bottomContainer={(
+                <Button
+                    title="JE ME CONNECTE" type="solid"
+                    buttonStyle={[styles.button, buttonStyle]}
+                    titleStyle={styles.buttonText}
+                    onPress={() => connect()}
+                    loading={showLoading}
+                />
+            )}
+        >
+            <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
+            <View style={[styles.containerView, styles.borderRadius]}>
+                <Text style={styles.text}>Connectez</Text>
+                <Text style={styles.text}>Vous</Text>
 
-        return (
-            // TODO : make it a component
-            <ParallaxView
-                backgroundSource={BobineImage}
-                windowHeight={height * 0.4}
-                scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
-                style={styles.borderRadius}
-                header={(
-                    <Icon
-                        type='ionicon'
-                        size={70}
-                        name={Platform.OS === 'ios' ? 'ios-close-circle' : 'md-close-circle'}
-                        color={Colors.whiteColor}
-                        containerStyle={{
-                            paddingTop: (height * 0.1),
-                        }}
-                        underlayColor={Colors.transparent}
-                        onPress={() => this.goBack()}
+                <View style={styles.formContainer}>
+                    <Input
+                        placeholder='Email'
+                        autoCapitalize='none'
+                        autoCompleteType='email'
+                        containerStyle={styles.divider}
+                        onChangeText={text => this.onChangeEmail(text)}
                     />
-                )}
-                bottomContainer={(
-                    <Button
-                        title="JE ME CONNECTE" type="solid"
-                        buttonStyle={[styles.button, this.state.buttonStyle]}
-                        titleStyle={styles.buttonText}
-                        onPress={() => this.signIn()}
-                        loading={this.state.showLoading}
+                    <Input
+                        placeholder='Mot de passe'
+                        autoCapitalize='none'
+                        autoCompleteType='password'
+                        secureTextEntry={true}
+                        onChangeText={text => this.onChangePassword(text)}
                     />
-                )}
-            >
-                <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
-                <View style={[styles.containerView, styles.borderRadius]}>
-                    <Text style={styles.text}>Connectez</Text>
-                    <Text style={styles.text}>Vous</Text>
-
-                    <View style={styles.formContainer}>
-                        <Input
-                            placeholder='Email'
-                            autoCapitalize='none'
-                            autoCompleteType='email'
-                            containerStyle={styles.divider}
-                            onChangeText={text => this.onChangeEmail(text)}
+                    <View style={styles.link}>
+                        <Button
+                            title="Mot de passe oublié ?"
+                            type="clear"
+                            titleStyle={{ textDecorationLine: 'underline' }}
                         />
-                        <Input
-                            placeholder='Mot de passe'
-                            autoCapitalize='none'
-                            autoCompleteType='password'
-                            secureTextEntry={true}
-                            onChangeText={text => this.onChangePassword(text)}
+                    </View>
+                    <View style={styles.link}>
+                        <Button
+                            title="S'inscrire"
+                            type="clear"
+                            onPress={() => this.goToSignUp()}
                         />
-                        <View style={styles.link}>
-                            <Button
-                                title="Mot de passe oublié ?"
-                                type="clear"
-                                titleStyle={{ textDecorationLine: 'underline' }}
-                            />
-                        </View>
-                        <View style={styles.link}>
-                            <Button
-                                title="S'inscrire"
-                                type="clear"
-                                onPress={() => this.goToSignUp()}
-                            />
-                        </View>
                     </View>
                 </View>
+            </View>
 
-            </ParallaxView>
-        );
-    }
+        </ParallaxView>
+    );
 }
 
 const styles = StyleSheet.create({
