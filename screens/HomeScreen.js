@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Platform,
     StyleSheet,
@@ -15,136 +15,117 @@ import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
 
-export class HomeScreen extends Component {
-    constructor(props) {
-        super(props);
+export function HomeScreen({ navigation }) {
 
-        this.state = {
-            // movies: null,
-            movies: [
-                {
-                    imdbID: 11631,
-                    title: "Mamma Mia !",
-                    releaseDate: "2019-02-05",
-                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-                },
-                {
-                    imdbID: 456,
-                    title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
-                    releaseDate: "2019-02-05",
-                },
-                {
-                    imdbID: 789,
-                    title: "Mamma",
-                    releaseDate: "2019-02-05",
-                    posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-                }
-            ],
-            showLoading: false,
-        };
-    }
+    // States
+    const [movies, setMovies] = useState([
+        {
+            imdbID: 11631,
+            title: "Mamma Mia !",
+            releaseDate: "2019-02-05",
+            posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+        },
+        {
+            imdbID: 456,
+            title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
+            releaseDate: "2019-02-05",
+        },
+        {
+            imdbID: 789,
+            title: "Mamma",
+            releaseDate: "2019-02-05",
+            posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+        }
+    ]);
+    const [showLoading, setLoading] = useState(false);
+    const [searchText, setSearchText] = useState(null);
 
-    componentWillMount() {
-        return this.isConnected()
+    // Équivalent à componentDidMount plus componentDidUpdate :
+    useEffect(() => {
+        isConnected();
+    }, []);
+
+    async function isConnected() {
+        return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
                 console.log("USER CONNECTED", accessToken);
-                // TODO : store to Context
-                
+                // TODO
                 // return getMovies()
                 //     .then((movies) => {
-                //         this.setState({ movies });
+                //         store to Context
                 //     });
             })
-
-    }
-
-    isConnected = () => {
-        return AsyncStorage.getItem('access_token')
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
             })
     }
 
 
-    updateSearch = (searchText) => {
-        this.setState({ searchText, showLoading: true });
+    async function updateSearch(searchText) {
+        setSearchText(searchText);
+        setLoading(true);
 
         return new Promise((resolve, reject) => {
             if (searchText.length > 0 && searchText.length % 3 === 0) {
                 return searchBy(searchText)
                     .then((searchList) => {
-                        this.setState({ movies: searchList, showLoading: false });
+                        setMovies(searchList);
+                        setLoading(false);
                         resolve();
                     })
                     .catch((error) => {
                         reject(error);
                     })
             } else {
-                this.setState({
-                    movies: searchText.length > 0 ? this.state.movies : null,
-                    showLoading: false
-                });
+                setMovies(searchText.length > 0 ? movies : null);
+                setLoading(false);
                 resolve();
             }
-        })
+        });
     };
 
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
-                <Search
-                    updateCallback={this.updateSearch}
-                    searchText={this.state.searchText}
-                    containerStyle={{
-                        backgroundColor: Colors.tintColor,
-                        borderBottomWidth: 0,
-                        borderTopWidth: 0,
-                    }}
-                    inputContainerStyle={{
-                        backgroundColor: Colors.tintColor,
-                        height: 50,
-                        borderRadius: 0,
-                    }}
-                    placeholderTextColor={Colors.lightColor}
-                    inputStyle={{ color: Colors.lightColor }}
-                    searchIcon={{
-                        iconStyle: { color: Colors.lightColor },
-                    }}
-                    clearIcon={{
-                        iconStyle: { color: Colors.lightColor },
-                    }}
-                    showLoading={this.state.showLoading}
-                    onCancel={() => {
-                        this.setState({ movies: null })
-                    }}
-                />
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
+            <Search
+                updateCallback={updateSearch}
+                searchText={searchText}
+                containerStyle={{
+                    backgroundColor: Colors.tintColor,
+                    borderBottomWidth: 0,
+                    borderTopWidth: 0,
+                }}
+                inputContainerStyle={{
+                    backgroundColor: Colors.tintColor,
+                    height: 50,
+                    borderRadius: 0,
+                }}
+                placeholderTextColor={Colors.lightColor}
+                inputStyle={{ color: Colors.lightColor }}
+                searchIcon={{
+                    iconStyle: { color: Colors.lightColor },
+                }}
+                clearIcon={{
+                    iconStyle: { color: Colors.lightColor },
+                }}
+                showLoading={showLoading}
+                onCancel={() => {
+                    setMovies(null);
+                }}
+            />
 
-                <View style={styles.pageContainer}>
-                    {this.state.movies && this.state.movies.length > 0 ? (
-                        <Movies movies={this.state.movies} navigation={this.props.navigation} />
-                    ) : (
-                            <View style={styles.noFilmContainer}>
-                                <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                            </View>
-                        )}
-                </View>
+            <View style={styles.pageContainer}>
+                {movies && movies.length > 0 ? (
+                    <Movies movies={movies} navigation={navigation} />
+                ) : (
+                        <View style={styles.noFilmContainer}>
+                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                        </View>
+                    )}
+            </View>
 
-                {/* For adding */}
-                {this.state.movieAdded &&
-                    <View style={styles.tabBarInfoContainer}>
-                        <Icon
-                            type='ionicon'
-                            size={26}
-                            name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
-                            color={"red"}
-                        />
-                        <Text style={styles.tabBarInfoText}>Ajouté au favori !</Text>
-                    </View>
-                }
-            </SafeAreaView>
-        )
-    };
+        </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({
