@@ -1,86 +1,80 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     StyleSheet,
     View,
-    ScrollView,
     Dimensions,
     Text,
-    Image,
 } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import { getMovieById } from '../utils/Api';
 import Movie from '../models/Movie';
-import Colors from '../constants/Colors';
 import ParallaxView from '../components/ParallaxView';
 
-export class MovieScreen extends Component {
-    constructor(props) {
-        super(props);
-        const { navigation } = this.props;
+export function MovieScreen({ navigation }) {
 
-        this.state = {
-            movieId: navigation.getParam('movieId', null),
-            movie: null,
-        };
-    }
+    // States
+    const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
+    const [movie, setMovie] = useState(null);
+    const [isFavorite, setFavorite] = useState(false);
+    const [user, setUser] = useState(null);
 
-    componentWillMount() {
-        return getMovieById(this.state.movieId)
+    const { height } = Dimensions.get('window');
+
+    // Équivalent à componentDidMount plus componentDidUpdate :
+    useEffect(() => {
+        getMovie();
+    }, []);
+
+    async function getMovie() {
+        return getMovieById(movieId)
             .then((movieJson) => {
                 let movie = new Movie(movieJson);
-                this.props.navigation.setParams({
+                navigation.setParams({
                     title: movie.title,
-                    likeUnlike: this.likeUnlike.bind(this),
-                    isFavorite: this.state.isFavorite
+                    likeUnlike: likeUnlike.bind(this),
+                    isFavorite: isFavorite
                 });
-                this.setState({ movie })
+                setMovie(movie);
             });
     }
 
     date = () => {
         let options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(this.state.movie.releaseDate).toLocaleDateString('fr-FR', options);
+        return new Date(movie.releaseDate).toLocaleDateString('fr-FR', options);
     }
 
     likeUnlike = () => {
-        if (this.state.user) {
+        if (user) {
             // of connected -> post like
-            this.setState({
-                isFavorite: !this.state.isFavorite
-            });
+            setFavorite(!isFavorite);
         } else {
             // of unconnected -> connection screen && post like
-            this.props.navigation.navigate('SignIn', {
-                action: this.state.isFavorite ? 'unlike' : 'like',
-                movieId: this.state.movieId
+            navigation.navigate('SignIn', {
+                action: isFavorite ? 'unlike' : 'like',
+                movieId: movieId
             });
         }
     }
 
-    render() {
-        let { height } = Dimensions.get('window');
-        let { movie } = this.state;
-
-        return (
-            <ParallaxView
-                backgroundSource={{ uri: movie && movie.backdropPath }}
-                windowHeight={height * 0.4}
-                scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
-                style={styles.borderRadius}
-            >
-                <View style={[styles.containerView, styles.borderRadius]}>
-                    <Text style={styles.containerText}>{movie && this.date()}</Text>
-                    <Text style={styles.containerText}>{movie && movie.overview}</Text>
-                    <Button
-                        title="Voir les commentaires"
-                        type="outline"
-                        style={styles.button}
-                    />
-                </View>
-            </ParallaxView>
-        );
-    }
+    return (
+        <ParallaxView
+            backgroundSource={{ uri: movie && movie.backdropPath }}
+            windowHeight={height * 0.4}
+            scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
+            style={styles.borderRadius}
+        >
+            <View style={[styles.containerView, styles.borderRadius]}>
+                <Text style={styles.containerText}>{movie && date()}</Text>
+                <Text style={styles.containerText}>{movie && movie.overview}</Text>
+                <Button
+                    title="Voir les commentaires"
+                    type="outline"
+                    style={styles.button}
+                />
+            </View>
+        </ParallaxView>
+    );
 }
 
 const styles = StyleSheet.create({
