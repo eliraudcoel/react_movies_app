@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     Platform,
     StyleSheet,
@@ -14,6 +14,7 @@ import { getMovies, searchBy } from '../utils/Api';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
+import UserContext from '../contexts/UserContext';
 
 const fakeMovies = [
     {
@@ -36,26 +37,30 @@ const fakeMovies = [
 ];
 
 export function HomeScreen({ navigation }) {
-
     // States
     const [movies, setMovies] = useState(fakeMovies);
     const [showLoading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState(null);
 
+    // Context
+    // const user = React.useContext(UserContext);
+
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
-        isConnected();
+        // TODO -> fix it
+        // if (!user) {
+            isConnected();
+        // }
     }, []);
 
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
                 console.log("USER CONNECTED", accessToken);
-                // TODO
-                // return getMovies()
-                //     .then((movies) => {
-                //         store to Context
-                //     });
+                // TODO -> getUser information
+                // setUser({
+                //     accessToken
+                // });
             })
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
