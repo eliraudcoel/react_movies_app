@@ -15,28 +15,30 @@ import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
 
+const fakeMovies = [
+    {
+        imdbID: 11631,
+        title: "Mamma Mia !",
+        releaseDate: "2019-02-05",
+        posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+    },
+    {
+        imdbID: 456,
+        title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
+        releaseDate: "2019-02-05",
+    },
+    {
+        imdbID: 789,
+        title: "Mamma",
+        releaseDate: "2019-02-05",
+        posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
+    }
+];
+
 export function HomeScreen({ navigation }) {
 
     // States
-    const [movies, setMovies] = useState([
-        {
-            imdbID: 11631,
-            title: "Mamma Mia !",
-            releaseDate: "2019-02-05",
-            posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-        },
-        {
-            imdbID: 456,
-            title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
-            releaseDate: "2019-02-05",
-        },
-        {
-            imdbID: 789,
-            title: "Mamma",
-            releaseDate: "2019-02-05",
-            posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-        }
-    ]);
+    const [movies, setMovies] = useState(fakeMovies);
     const [showLoading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState(null);
 
@@ -59,7 +61,6 @@ export function HomeScreen({ navigation }) {
                 console.log("ERROR ON STORAGE", error);
             })
     }
-
 
     async function updateSearch(searchText) {
         setSearchText(searchText);

@@ -24,7 +24,7 @@ export function MovieScreen({ navigation }) {
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
         getMovie();
-    }, []);
+    }, [movieId]);
 
     async function getMovie() {
         return getMovieById(movieId)

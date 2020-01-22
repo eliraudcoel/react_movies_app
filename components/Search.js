@@ -1,32 +1,20 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SearchBar } from 'react-native-elements';
 
-export default class Search extends Component {
+export default function Search(props) {
+  // States
+  const [searchText, setSearchText] = useState(props.searchText);
 
-  constructor(props) {
-    super(props);
+  useEffect(() => {
+    setSearchText(searchText);
+  }, [searchText]);
 
-    this.state = {
-      updateCallback: props.updateCallback,
-      searchText: '',
-      previousSearchText: '',
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      searchText: nextProps.searchText,
-    })
-  }
-
-  render() {
-    return (
-      <SearchBar
-        placeholder="Type Here..."
-        onChangeText={this.state.updateCallback}
-        value={this.state.searchText}
-        {...this.props}
-      />
-    );
-  }
+  return (
+    <SearchBar
+      placeholder="Type Here..."
+      onChangeText={props.updateCallback}
+      value={searchText}
+      {...props}
+    />
+  );
 }

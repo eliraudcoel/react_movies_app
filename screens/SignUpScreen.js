@@ -82,7 +82,6 @@ export function SignUpScreen({ navigation }) {
     // }
 
     return (
-        // TODO : make it a component
         <ParallaxView
             backgroundSource={BobineImage}
             windowHeight={height * 0.4}
