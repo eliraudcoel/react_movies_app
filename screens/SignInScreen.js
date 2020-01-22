@@ -69,7 +69,7 @@ export function SignInScreen({ navigation }) {
     connect = () => {
         setLoading(true);
 
-        return connect(email, password)
+        return signIn(email, password)
             .then((response) => {
                 console.log("RESPONSE", response);
                 setLoading(false);
