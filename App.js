@@ -10,6 +10,7 @@ import UserContext from './contexts/UserContext';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
+  const [user, updateUser] = useState({});
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
@@ -23,9 +24,16 @@ export default function App(props) {
     return (
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <UserContext.Provider>
+
+        <UserContext.Provider value={[user, updateUser]}>
+
           <AppNavigator />
+          {/* <UserContext.Provider> */}
+          {/* <UserContext.Consumer>
+            {props => <AppNavigator {...props} />}
+          </UserContext.Consumer> */}
         </UserContext.Provider>
+
       </View>
     );
   }

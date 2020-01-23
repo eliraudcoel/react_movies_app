@@ -43,13 +43,14 @@ export function HomeScreen({ navigation }) {
     const [searchText, setSearchText] = useState(null);
 
     // Context
-    // const user = React.useContext(UserContext);
+    const [user, updateUser] = useContext(UserContext);
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
         // TODO -> fix it
         // if (!user) {
-            isConnected();
+        isConnected();
+        console.log(user, updateUser);
         // }
     }, []);
 
@@ -58,6 +59,9 @@ export function HomeScreen({ navigation }) {
             .then((accessToken) => {
                 console.log("USER CONNECTED", accessToken);
                 // TODO -> getUser information
+                updateUser(user => ({ ...user, firstName: "toto" }));
+
+                console.log(user);
                 // setUser({
                 //     accessToken
                 // });
