@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
     StyleSheet,
     View,
@@ -10,6 +10,7 @@ import { Button } from 'react-native-elements';
 import { getMovieById } from '../utils/Api';
 import Movie from '../models/Movie';
 import ParallaxView from '../components/ParallaxView';
+import { UserContext } from '../contexts/UserContext';
 
 export function MovieScreen({ navigation }) {
 
@@ -17,9 +18,11 @@ export function MovieScreen({ navigation }) {
     const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
     const [movie, setMovie] = useState(null);
     const [isFavorite, setFavorite] = useState(false);
-    const [user, setUser] = useState(null);
 
     const { height } = Dimensions.get('window');
+
+    // Context
+    const [user, updateUser] = useContext(UserContext);
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {

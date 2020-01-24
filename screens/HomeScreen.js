@@ -9,12 +9,11 @@ import {
     AsyncStorage,
 } from 'react-native';
 
-import { Icon } from 'react-native-elements';
 import { getMovies, searchBy } from '../utils/Api';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
-import UserContext from '../contexts/UserContext';
+import { UserContext } from '../contexts/UserContext';
 
 const fakeMovies = [
     {
@@ -47,24 +46,15 @@ export function HomeScreen({ navigation }) {
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
-        // TODO -> fix it
-        // if (!user) {
-        isConnected();
-        console.log(user, updateUser);
-        // }
+        if (user !== {}) {
+            isConnected();
+        }
     }, []);
 
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
-                console.log("USER CONNECTED", accessToken);
-                // TODO -> getUser information
-                updateUser(user => ({ ...user, firstName: "toto" }));
-
-                console.log(user);
-                // setUser({
-                //     accessToken
-                // });
+                updateUser(user => ({ ...user, accessToken }));
             })
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);

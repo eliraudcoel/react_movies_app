@@ -6,11 +6,10 @@ import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import AppNavigator from './navigation/AppNavigator';
-import UserContext from './contexts/UserContext';
+import { UserContextProvider } from './contexts/UserContext';
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
-  const [user, updateUser] = useState({});
 
   if (!isLoadingComplete && !props.skipLoadingScreen) {
     return (
@@ -25,14 +24,9 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
 
-        <UserContext.Provider value={[user, updateUser]}>
-
+        <UserContextProvider>
           <AppNavigator />
-          {/* <UserContext.Provider> */}
-          {/* <UserContext.Consumer>
-            {props => <AppNavigator {...props} />}
-          </UserContext.Consumer> */}
-        </UserContext.Provider>
+        </UserContextProvider>
 
       </View>
     );
