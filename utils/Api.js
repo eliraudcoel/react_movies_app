@@ -20,8 +20,11 @@ export function getMovies() {
 
 export function getMovieById(movieId) {
     const movieUri = `https://api.themoviedb.org/${API_VERSION}/movie/${movieId}?api_key=${API_KEY}`;
+    let uri = setApiParams(movieUri, {
+        language: 'fr-FR'
+    });
 
-    return fetch(movieUri)
+    return fetch(uri)
         .then((response) => response.json())
         .then((responseJson) => {
             return responseJson;
