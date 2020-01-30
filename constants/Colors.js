@@ -22,6 +22,7 @@ export default {
   lightTintColorDarker,
   lightColor,
   whiteColor,
+  redColor: "red",
 
   tabIconDefault: lightTintColorDarker,
   tabIconSelected: lightColor,

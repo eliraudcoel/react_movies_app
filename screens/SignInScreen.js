@@ -14,22 +14,28 @@ import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 import { signIn } from '../utils/Api';
+import ErrorModal from '../components/ErrorModal';
 
 export function SignInScreen({ navigation }) {
     // States
     const [buttonStyle, setButtonStyle] = useState({});
     const [showLoading, setLoading] = useState(false);
+
+    // Page information
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
-    const [action, setAction] = useState(navigation.getParam('action', null));
+
+    // Redirect information
+    const [redirectTo, setRedirectTo] = useState(navigation.getParam('redirectTo', null));
+    const [redirectParams, setRedirectParams] = useState(navigation.getParam('redirectParams', {}));
+    const [error, setError] = useState(navigation.getParam('error', null));
 
     const { height } = Dimensions.get('window');
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
         Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
-        Keyboard.addListener('keyboardDidHide',_keyboardDidHide);
+        Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
 
         return function cleanup() {
             Keyboard.removeAllListeners('keyboardDidShow');
@@ -66,6 +72,13 @@ export function SignInScreen({ navigation }) {
             })
     }
 
+    storeId = (id) => {
+        return AsyncStorage.setItem('user_id', id)
+            .catch((error) => {
+                console.log("ERROR ON STORAGE", error);
+            })
+    }
+
     connect = () => {
         setLoading(true);
 
@@ -76,6 +89,11 @@ export function SignInScreen({ navigation }) {
 
                 return storeToken(response.access_token)
                     .then(() => {
+                        if (response.id) {
+                            return storeId(response.id)
+                        }
+                    })
+                    .then(() => {
                         navigation.navigate('Home');
                     });
             })
@@ -85,11 +103,10 @@ export function SignInScreen({ navigation }) {
     }
 
     goBack = () => {
-        console.log("GO BACK");
+        // GO BACK not working
         // this.props.navigation.goBack();
-        navigation.navigate('Movie', {
-            movieId: movieId,
-        })
+
+        navigation.navigate(redirectTo, redirectParams);
     }
 
     return (
@@ -157,6 +174,8 @@ export function SignInScreen({ navigation }) {
                     </View>
                 </View>
             </View>
+
+            <ErrorModal visible={!!error}/>
 
         </ParallaxView>
     );

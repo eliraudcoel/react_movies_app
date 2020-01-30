@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Button } from 'react-native-elements';
 
-import { getMovieById } from '../utils/Api';
+import { getMovieById } from '../utils/MovieApi';
 import Movie from '../models/Movie';
 import ParallaxView from '../components/ParallaxView';
 import { UserContext } from '../contexts/UserContext';
@@ -54,8 +54,11 @@ export function MovieScreen({ navigation }) {
         } else {
             // of unconnected -> connection screen && post like
             navigation.navigate('SignIn', {
-                action: isFavorite ? 'unlike' : 'like',
-                movieId: movieId
+                redirectTo: 'Movie',
+                redirectParams: {
+                    action: isFavorite ? 'unlike' : 'like',
+                    movieId: movieId
+                }
             });
         }
     }

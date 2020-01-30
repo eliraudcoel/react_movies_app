@@ -9,35 +9,19 @@ import {
     AsyncStorage,
 } from 'react-native';
 
-import { getMovies, searchBy } from '../utils/Api';
+import { searchBy } from '../utils/MovieApi';
+import { getUserById } from '../utils/Api';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
+import Movie from '../models/Movie';
 
-const fakeMovies = [
-    {
-        imdbID: 11631,
-        title: "Mamma Mia !",
-        releaseDate: "2019-02-05",
-        posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-    },
-    {
-        imdbID: 456,
-        title: "Mammaaaaaa aaaaaa aaaaaa aaaaa aaaa",
-        releaseDate: "2019-02-05",
-    },
-    {
-        imdbID: 789,
-        title: "Mamma",
-        releaseDate: "2019-02-05",
-        posterPath: "https://image.tmdb.org/t/p/original/xRbDA4Ys0Y2Bvbnme02fVBwMWFe.jpg"
-    }
-];
+const SEARCH_THROTTLE = 3;
 
 export function HomeScreen({ navigation }) {
     // States
-    const [movies, setMovies] = useState(fakeMovies);
+    const [movies, setMovies] = useState([]);
     const [showLoading, setLoading] = useState(false);
     const [searchText, setSearchText] = useState(null);
 
@@ -51,10 +35,59 @@ export function HomeScreen({ navigation }) {
         }
     }, []);
 
+    useEffect(() => {
+        resetForUserMovies();
+    }, [user]);
+
+    resetForUserMovies = () => {
+        if (user && user.movies && user.movies.length > 0) {
+            let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
+            setMovies(formattedMovies);
+        }
+    }
+
+    async function errorReport(error) {
+        return new Promise((resolve, reject) => {
+            switch (error.error_code) {
+                case "Exceptions::InvalidToken":
+                    // Invalid token OR Token expired
+                    AsyncStorage.removeItem('access_token')
+                        .then(() => {
+                            console.log("NAVIGATE")
+                            navigation.navigate('SignIn', {
+                                redirectTo: 'Home',
+                                error: error.details.message
+                            });
+                            resolve();
+                        })
+                    // Display error
+                    // remove token from application
+                    // redirect to signIn portal
+                    break;
+                default:
+                    // display error
+                    resolve();
+                    break;
+            }
+        })
+    }
+
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
-                updateUser(user => ({ ...user, accessToken }));
+                return getUserById(1)
+                    .then((responseJson) => {
+                        console.log(responseJson, accessToken);
+                        updateUser(user => ({
+                            ...user,
+                            ...responseJson,
+                            accessToken
+                        }));
+                    })
+                    .catch((error) => {
+                        console.log("isConnected", error);
+                        return errorReport(error);
+                    })
             })
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
@@ -66,7 +99,7 @@ export function HomeScreen({ navigation }) {
         setLoading(true);
 
         return new Promise((resolve, reject) => {
-            if (searchText.length > 0 && searchText.length % 3 === 0) {
+            if (searchText.length > 0 && searchText.length % SEARCH_THROTTLE === 0) {
                 return searchBy(searchText)
                     .then((searchList) => {
                         setMovies(searchList);
@@ -109,8 +142,8 @@ export function HomeScreen({ navigation }) {
                     iconStyle: { color: Colors.lightColor },
                 }}
                 showLoading={showLoading}
-                onCancel={() => {
-                    setMovies(null);
+                onClear={() => {
+                    resetForUserMovies();
                 }}
             />
 

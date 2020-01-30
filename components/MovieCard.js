@@ -14,7 +14,7 @@ export default function MovieCard(props) {
   useEffect(() => {
     setMovie(movie);
   }, [movie]);
- 
+
   return (
     <ListItem
       onPress={() => props.goToNextScreen()}
@@ -26,7 +26,7 @@ export default function MovieCard(props) {
       rightIcon={{
         name: Platform.OS === 'ios' ? 'ios-heart' : 'md-heart',
         type: "ionicon",
-        color: Colors.greyColor,
+        color: movie.favorite ? Colors.redColor : Colors.greyColor,
       }}
       bottomDivider
       chevron={{ color: Colors.lightTintColorDarker }}

@@ -12,14 +12,19 @@ import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 
+// TODO : make it unique with SignUp
 export function SignUpScreen({ navigation }) {
     // States
     const [buttonStyle, setButtonStyle] = useState({});
     const [showLoading, setLoading] = useState(false);
+
+    // Page information
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
-    const [action, setAction] = useState(navigation.getParam('action', null));
+
+    // Redirect information
+    const [redirectTo, setRedirectTo] = useState(navigation.getParam('redirectTo', null));
+    const [redirectParams, setRedirectParams] = useState(navigation.getParam('redirectParams', {}));
 
     const { height } = Dimensions.get('window');
 
