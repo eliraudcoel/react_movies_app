@@ -30,7 +30,7 @@ export function HomeScreen({ navigation }) {
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
-        if (user !== {}) {
+        if (user) {
             isConnected();
         }
     }, []);
@@ -60,12 +60,8 @@ export function HomeScreen({ navigation }) {
                             });
                             resolve();
                         })
-                    // Display error
-                    // remove token from application
-                    // redirect to signIn portal
                     break;
                 default:
-                    // display error
                     resolve();
                     break;
             }
@@ -75,19 +71,21 @@ export function HomeScreen({ navigation }) {
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
-                return getUserById(1)
-                    .then((responseJson) => {
-                        console.log(responseJson, accessToken);
-                        updateUser(user => ({
-                            ...user,
-                            ...responseJson,
-                            accessToken
-                        }));
-                    })
-                    .catch((error) => {
-                        console.log("isConnected", error);
-                        return errorReport(error);
-                    })
+                if(accessToken) {
+                    return getUserById(1)
+                        .then((responseJson) => {
+                            console.log(responseJson, accessToken);
+                            updateUser(user => ({
+                                ...user,
+                                ...responseJson,
+                                accessToken
+                            }));
+                        })
+                        .catch((error) => {
+                            console.log("isConnected", error);
+                            return errorReport(error);
+                        })
+                }
             })
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);

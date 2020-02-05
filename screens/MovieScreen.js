@@ -48,6 +48,7 @@ export function MovieScreen({ navigation }) {
     }
 
     likeUnlike = () => {
+        console.log(user);
         if (user) {
             // of connected -> post like
             setFavorite(!isFavorite);

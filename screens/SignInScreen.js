@@ -73,7 +73,7 @@ export function SignInScreen({ navigation }) {
     }
 
     storeId = (id) => {
-        return AsyncStorage.setItem('user_id', id)
+        return AsyncStorage.setItem('user_id', id.toString())
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
             })
@@ -87,18 +87,18 @@ export function SignInScreen({ navigation }) {
                 console.log("RESPONSE", response);
                 setLoading(false);
 
-                return storeToken(response.access_token)
-                    .then(() => {
-                        if (response.id) {
-                            return storeId(response.id)
-                        }
-                    })
-                    .then(() => {
-                        navigation.navigate('Home');
-                    });
+                return Promise.all([
+                    storeToken(response.access_token),
+                    storeId(response.id),
+                ])
+                .then(() => {
+                    navigation.navigate('Home');
+                })
             })
             .catch((error) => {
-                reject(error);
+                console.log(error);
+                // TODO show error
+                // reject(error);
             })
     }
 
@@ -175,7 +175,7 @@ export function SignInScreen({ navigation }) {
                 </View>
             </View>
 
-            <ErrorModal visible={!!error}/>
+            <ErrorModal visible={!!error} />
 
         </ParallaxView>
     );
