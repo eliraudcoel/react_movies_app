@@ -11,6 +11,7 @@ import { getMovieById } from '../utils/MovieApi';
 import Movie from '../models/Movie';
 import ParallaxView from '../components/ParallaxView';
 import { UserContext } from '../contexts/UserContext';
+import { updateUserMovie, createUserMovie } from '../utils/Api';
 
 export function MovieScreen({ navigation }) {
 
@@ -50,8 +51,24 @@ export function MovieScreen({ navigation }) {
     likeUnlike = () => {
         console.log(user);
         if (user) {
-            // of connected -> post like
-            setFavorite(!isFavorite);
+            if (movie.userMovieId) {
+                updateUserMovie(movie.userMovieId, {
+                    favorite: !isFavorite
+                })
+                .then((userMovieJson) => {
+                    // of connected -> post like
+                    setFavorite(userMovieJson.favorite);
+                })
+            } else {
+                createUserMovie(user.access_token, {
+                    ...movie,
+                    favorite: !isFavorite
+                })
+                .then((userMovieJson) => {
+                    // of connected -> post like
+                    setFavorite(userMovieJson.favorite);
+                })
+            }
         } else {
             // of unconnected -> connection screen && post like
             navigation.navigate('SignIn', {

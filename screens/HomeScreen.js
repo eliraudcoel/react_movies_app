@@ -30,9 +30,7 @@ export function HomeScreen({ navigation }) {
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
-        if (user) {
-            isConnected();
-        }
+        isConnected();
     }, []);
 
     useEffect(() => {
@@ -51,15 +49,15 @@ export function HomeScreen({ navigation }) {
             switch (error.error_code) {
                 case "Exceptions::InvalidToken":
                     // Invalid token OR Token expired
-                    AsyncStorage.removeItem('access_token')
-                        .then(() => {
+                    // AsyncStorage.removeItem('access_token')
+                    //     .then(() => {
                             console.log("NAVIGATE")
                             navigation.navigate('SignIn', {
                                 redirectTo: 'Home',
                                 error: error.details.message
                             });
                             resolve();
-                        })
+                        // })
                     break;
                 default:
                     resolve();
@@ -71,8 +69,9 @@ export function HomeScreen({ navigation }) {
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
-                if(accessToken) {
-                    return getUserById(1)
+                console.log("ACCESS TOKEN", accessToken);
+                if (accessToken) {
+                    return getUserById(accessToken, 1)
                         .then((responseJson) => {
                             console.log(responseJson, accessToken);
                             updateUser(user => ({

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
     StyleSheet,
     Text,
@@ -15,6 +15,7 @@ import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
 import { signIn } from '../utils/Api';
 import ErrorModal from '../components/ErrorModal';
+import { UserContext } from '../contexts/UserContext';
 
 export function SignInScreen({ navigation }) {
     // States
@@ -29,6 +30,9 @@ export function SignInScreen({ navigation }) {
     const [redirectTo, setRedirectTo] = useState(navigation.getParam('redirectTo', null));
     const [redirectParams, setRedirectParams] = useState(navigation.getParam('redirectParams', {}));
     const [error, setError] = useState(navigation.getParam('error', null));
+
+    // User context
+    const [user, updateUser] = useContext(UserContext);
 
     const { height } = Dimensions.get('window');
 
@@ -66,7 +70,7 @@ export function SignInScreen({ navigation }) {
     }
 
     storeToken = (accessToken) => {
-        return AsyncStorage.setItem('access_token', accessToken)
+        return AsyncStorage.setItem('access_token', accessToken.toString())
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
             })
@@ -90,8 +94,10 @@ export function SignInScreen({ navigation }) {
                 return Promise.all([
                     storeToken(response.access_token),
                     storeId(response.id),
+                    updateUser(response),
                 ])
-                .then(() => {
+                .then((values) => {
+                    console.log(values);
                     navigation.navigate('Home');
                 })
             })
