@@ -12,12 +12,14 @@ import Movie from '../models/Movie';
 import ParallaxView from '../components/ParallaxView';
 import { UserContext } from '../contexts/UserContext';
 import { updateUserMovie, createUserMovie } from '../utils/Api';
+import TabBarInfo from '../components/TabBarInfo';
 
 export function MovieScreen({ navigation }) {
 
     // States
     const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
     const [movie, setMovie] = useState(null);
+    const [showFavoriteAdd, setShowFavoriteAdd] = useState(false);
     const [isFavorite, setFavorite] = useState(false);
 
     const { height } = Dimensions.get('window');
@@ -30,16 +32,21 @@ export function MovieScreen({ navigation }) {
         getMovie();
     }, [movieId]);
 
+    useEffect(() => {
+        navigation.setParams({ isFavorite });
+    }, [isFavorite]);
+
     async function getMovie() {
         return getMovieById(movieId)
             .then((movieJson) => {
                 let movie = new Movie(movieJson);
                 navigation.setParams({
                     title: movie.title,
-                    likeUnlike: likeUnlike.bind(this),
-                    isFavorite: isFavorite
+                    likeUnlike: likeUnlike,
+                    isFavorite: userMovieFavorite()
                 });
                 setMovie(movie);
+                setFavorite(userMovieFavorite());
             });
     }
 
@@ -48,25 +55,46 @@ export function MovieScreen({ navigation }) {
         return new Date(movie.releaseDate).toLocaleDateString('fr-FR', options);
     }
 
-    likeUnlike = () => {
-        console.log(user);
+    userMovieFavorite = () => {
+        return getUserMovie().favorite || false;
+    }
+
+    getUserMovie = () => {
+        return user.movies.filter((movie) => movie.imdbID === movieId)[0];
+    }
+
+    showTabBarInfo = () => {
+        setShowFavoriteAdd(true);
+        setTimeout(() => {
+            setShowFavoriteAdd(false);
+        }, 1000);
+    }
+
+    likeUnlike = (favorite) => {
+        user_movie = getUserMovie();
         if (user) {
-            if (movie.userMovieId) {
-                updateUserMovie(movie.userMovieId, {
-                    favorite: !isFavorite
+            if (user_movie) {
+                updateUserMovie(user.accessToken, user_movie.id, {
+                    favorite: !favorite
                 })
                 .then((userMovieJson) => {
                     // of connected -> post like
                     setFavorite(userMovieJson.favorite);
+                    if (userMovieJson.favorite) {
+                        showTabBarInfo();
+                    }
                 })
             } else {
-                createUserMovie(user.access_token, {
+                createUserMovie(user.accessToken, {
                     ...movie,
-                    favorite: !isFavorite
+                    favorite: !favorite
                 })
                 .then((userMovieJson) => {
                     // of connected -> post like
                     setFavorite(userMovieJson.favorite);
+                    if (userMovieJson.favorite) {
+                        showTabBarInfo();
+                    }
                 })
             }
         } else {
@@ -97,6 +125,9 @@ export function MovieScreen({ navigation }) {
                     style={styles.button}
                 />
             </View>
+            {showFavoriteAdd &&
+                <TabBarInfo />
+            }
         </ParallaxView>
     );
 }

@@ -44,7 +44,6 @@ export function _get(url, headers) {
 
 
 function manageError(responseJson) {
-    console.log(responseJson);
     if (responseJson && responseJson.error_code) {
         throw responseJson;
     } else {
@@ -60,7 +59,7 @@ function manageError(responseJson) {
 export function signIn(email, password) {
     let url = BACKEND_URL + "sessions";
 
-    return fetchApi(url, 'POST', null, { email, password })
+    return _form(url, 'POST', null, { email, password })
         .then((response) => response.json())
         .then(manageError)
         .catch((error) => {
@@ -72,7 +71,7 @@ export function signIn(email, password) {
 
 /**
  * getUserById - GET /users/:id
- * @param {number} userId 
+ * @param {number} userId
  */
 export function getUserById(userToken, userId) {
     let url = BACKEND_URL + `users/${userId}`;
@@ -109,7 +108,7 @@ export function createUserMovie(userToken, params) {
 
 /**
  * updateUserMovie - PUT /user_movies
- * @param {Object} params 
+ * @param {Object} params
  */
 export function updateUserMovie(userToken, userMovieId, params) {
     let url = BACKEND_URL + "user_movies/" + userMovieId;

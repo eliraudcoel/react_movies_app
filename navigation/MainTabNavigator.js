@@ -56,7 +56,7 @@ const HomeStack = createStackNavigator(
             color={navigation.getParam('isFavorite') ? 'red' : Colors.whiteColor}
             underlayColor={Colors.transparent}
             containerStyle={{ paddingRight: 15 }}
-            onPress={() => navigation.getParam('likeUnlike')()}
+            onPress={() => navigation.getParam('likeUnlike')(navigation.getParam('isFavorite'))}
           />,
           title: navigation.getParam('title'),
         }

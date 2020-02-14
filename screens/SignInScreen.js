@@ -88,7 +88,6 @@ export function SignInScreen({ navigation }) {
 
         return signIn(email, password)
             .then((response) => {
-                console.log("RESPONSE", response);
                 setLoading(false);
 
                 return Promise.all([
@@ -97,7 +96,6 @@ export function SignInScreen({ navigation }) {
                     updateUser(response),
                 ])
                 .then((values) => {
-                    console.log(values);
                     navigation.navigate('Home');
                 })
             })

@@ -51,7 +51,6 @@ export function HomeScreen({ navigation }) {
                     // Invalid token OR Token expired
                     // AsyncStorage.removeItem('access_token')
                     //     .then(() => {
-                            console.log("NAVIGATE")
                             navigation.navigate('SignIn', {
                                 redirectTo: 'Home',
                                 error: error.details.message
@@ -73,7 +72,6 @@ export function HomeScreen({ navigation }) {
                 if (accessToken) {
                     return getUserById(accessToken, 1)
                         .then((responseJson) => {
-                            console.log(responseJson, accessToken);
                             updateUser(user => ({
                                 ...user,
                                 ...responseJson,
@@ -148,12 +146,11 @@ export function HomeScreen({ navigation }) {
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} />
                 ) : (
-                        <View style={styles.noFilmContainer}>
-                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                        </View>
-                    )}
+                    <View style={styles.noFilmContainer}>
+                        <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                    </View>
+                )}
             </View>
-
         </SafeAreaView>
     )
 }
