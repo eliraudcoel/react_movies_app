@@ -37,6 +37,9 @@ export function HomeScreen({ navigation }) {
         resetForUserMovies();
     }, [user]);
 
+    /**
+     * resetForUserMovies - Reset form and populate with user's movies
+     */
     resetForUserMovies = () => {
         if (user && user.movies && user.movies.length > 0) {
             let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
@@ -44,6 +47,10 @@ export function HomeScreen({ navigation }) {
         }
     }
 
+    /**
+     * errorReport - Display error if Token has expired
+     * @param {Object} error 
+     */
     async function errorReport(error) {
         return new Promise((resolve, reject) => {
             switch (error.error_code) {
@@ -51,12 +58,12 @@ export function HomeScreen({ navigation }) {
                     // Invalid token OR Token expired
                     // AsyncStorage.removeItem('access_token')
                     //     .then(() => {
-                            navigation.navigate('SignIn', {
-                                redirectTo: 'Home',
-                                error: error.details.message
-                            });
-                            resolve();
-                        // })
+                    navigation.navigate('SignIn', {
+                        redirectTo: 'Home',
+                        error: error.details.message
+                    });
+                    resolve();
+                    // })
                     break;
                 default:
                     resolve();
@@ -65,6 +72,9 @@ export function HomeScreen({ navigation }) {
         })
     }
 
+    /**
+     * isConnected - Get user information from accessToken
+     */
     async function isConnected() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
@@ -72,10 +82,10 @@ export function HomeScreen({ navigation }) {
                 if (accessToken) {
                     return getUserById(accessToken, 1)
                         .then((responseJson) => {
+                            console.log(responseJson);
                             updateUser(user => ({
                                 ...user,
                                 ...responseJson,
-                                accessToken
                             }));
                         })
                         .catch((error) => {
@@ -83,17 +93,20 @@ export function HomeScreen({ navigation }) {
                             return errorReport(error);
                         })
                 }
-            })
-            .catch((error) => {
-                console.log("ERROR ON STORAGE", error);
-            })
+            });
     }
 
+    /**
+     * updateSearch - Search film on API movie call
+     * @param {String} searchText 
+     */
     async function updateSearch(searchText) {
         setSearchText(searchText);
         setLoading(true);
 
         return new Promise((resolve, reject) => {
+            console.log(searchText.length);
+            console.log(searchText.length % SEARCH_THROTTLE);
             if (searchText.length > 0 && searchText.length % SEARCH_THROTTLE === 0) {
                 return searchBy(searchText)
                     .then((searchList) => {
@@ -146,10 +159,10 @@ export function HomeScreen({ navigation }) {
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} />
                 ) : (
-                    <View style={styles.noFilmContainer}>
-                        <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                    </View>
-                )}
+                        <View style={styles.noFilmContainer}>
+                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                        </View>
+                    )}
             </View>
         </SafeAreaView>
     )
