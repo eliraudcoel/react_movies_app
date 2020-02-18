@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
     StyleSheet,
     Text,
     StatusBar,
     View,
     Dimensions,
+    AsyncStorage,
     Keyboard,
+    Platform,
 } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Input, Button, Icon } from 'react-native-elements';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
+import { signUp } from '../utils/Api';
+import { UserContext } from '../contexts/UserContext';
 
 // TODO : make it unique with SignUp
 export function SignUpScreen({ navigation }) {
@@ -25,6 +29,9 @@ export function SignUpScreen({ navigation }) {
     // Redirect information
     const [redirectTo, setRedirectTo] = useState(navigation.getParam('redirectTo', null));
     const [redirectParams, setRedirectParams] = useState(navigation.getParam('redirectParams', {}));
+
+    // User context
+    const [user, updateUser] = useContext(UserContext);
 
     const { height } = Dimensions.get('window');
 
@@ -61,30 +68,43 @@ export function SignUpScreen({ navigation }) {
         setPassword(password);
     }
 
+
     storeToken = (accessToken) => {
-        return AsyncStorage.setItem('access_token', accessToken)
+        return AsyncStorage.setItem('access_token', accessToken.toString())
             .catch((error) => {
                 console.log("ERROR ON STORAGE", error);
             })
     }
 
-    // connect = () => {
-    //     setLoading(true);
+    storeId = (id) => {
+        return AsyncStorage.setItem('user_id', id.toString())
+            .catch((error) => {
+                console.log("ERROR ON STORAGE", error);
+            })
+    }
 
-    //     return connect(email, password)
-    //         .then((response) => {
-    //             console.log("RESPONSE", response);
-    //             setLoading(false);
+    connect = () => {
+        setLoading(true);
 
-    //             return storeToken(response.access_token)
-    //                 .then(() => {
-    //                     navigation.navigate('Home');
-    //                 });
-    //         })
-    //         .catch((error) => {
-    //             reject(error);
-    //         })
-    // }
+        return signUp(email, password)
+            .then((response) => {
+                setLoading(false);
+
+                return Promise.all([
+                    storeToken(response.access_token),
+                    storeId(response.id),
+                    updateUser(response),
+                ])
+                .then((values) => {
+                    navigation.navigate('Home');
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+                // TODO show error
+                // reject(error);
+            })
+    }
 
     return (
         <ParallaxView
@@ -97,7 +117,7 @@ export function SignUpScreen({ navigation }) {
                     title="JE M'INSCRIS" type="solid"
                     buttonStyle={[styles.button, buttonStyle]}
                     titleStyle={styles.buttonText}
-                    // onPress={() => connect()}
+                    onPress={() => connect()}
                     loading={showLoading}
                 />
             )}
