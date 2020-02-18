@@ -36,6 +36,9 @@ export function MovieScreen({ navigation }) {
         navigation.setParams({ isFavorite });
     }, [isFavorite]);
 
+    /**
+     * getMovie - Get movie by id from Database
+     */
     async function getMovie() {
         return getMovieById(movieId)
             .then((movieJson) => {
@@ -43,26 +46,47 @@ export function MovieScreen({ navigation }) {
                 navigation.setParams({
                     title: movie.title,
                     likeUnlike: likeUnlike,
-                    isFavorite: userMovieFavorite()
+                    isFavorite: userMovieFavorite(),
+                    movie: movie,
                 });
                 setMovie(movie);
                 setFavorite(userMovieFavorite());
             });
     }
 
+    /**
+     * date - Display date correctly
+     */
     date = () => {
         let options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(movie.releaseDate).toLocaleDateString('fr-FR', options);
     }
 
+    /**
+     * userMovieFavorite - Check if movie is in favorite for User
+     */
     userMovieFavorite = () => {
-        return getUserMovie().favorite || false;
+        if (getUserMovie()) {
+            return getUserMovie().favorite;
+        }
+
+        return false;
     }
 
+    /**
+     * getUserMovie - Get current movie on user's movies list
+     */
     getUserMovie = () => {
-        return user.movies.filter((movie) => movie.imdbID === movieId)[0];
+        if (user && user.movies) {
+            return user.movies.filter((movie) => movie.imdbID === movieId)[0];
+        }
+        
+        return null;
     }
 
+    /**
+     * showTabBarInfo - Show/Hide favorite panel
+     */
     showTabBarInfo = () => {
         setShowFavoriteAdd(true);
         setTimeout(() => {
@@ -70,32 +94,35 @@ export function MovieScreen({ navigation }) {
         }, 1000);
     }
 
-    likeUnlike = (favorite) => {
+    /**
+     * likeUnlike - Like/Unlike a movie
+     */
+    likeUnlike = (favorite, movie) => {
         user_movie = getUserMovie();
         if (user) {
             if (user_movie) {
-                updateUserMovie(user.accessToken, user_movie.id, {
+                updateUserMovie(user_movie.id, {
                     favorite: !favorite
                 })
-                .then((userMovieJson) => {
-                    // of connected -> post like
-                    setFavorite(userMovieJson.favorite);
-                    if (userMovieJson.favorite) {
-                        showTabBarInfo();
-                    }
-                })
+                    .then((userMovieJson) => {
+                        // of connected -> post like
+                        setFavorite(userMovieJson.favorite);
+                        if (userMovieJson.favorite) {
+                            showTabBarInfo();
+                        }
+                    })
             } else {
-                createUserMovie(user.accessToken, {
+                createUserMovie({
                     ...movie,
                     favorite: !favorite
                 })
-                .then((userMovieJson) => {
-                    // of connected -> post like
-                    setFavorite(userMovieJson.favorite);
-                    if (userMovieJson.favorite) {
-                        showTabBarInfo();
-                    }
-                })
+                    .then((userMovieJson) => {
+                        // of connected -> post like
+                        setFavorite(userMovieJson.favorite);
+                        if (userMovieJson.favorite) {
+                            showTabBarInfo();
+                        }
+                    })
             }
         } else {
             // of unconnected -> connection screen && post like
