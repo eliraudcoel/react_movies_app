@@ -1,3 +1,5 @@
+import { AsyncStorage } from 'react-native';
+
 // URLS
 const BACKEND_URL = `http://localhost:3000/api/`;
 // TODO : make it https
@@ -6,6 +8,29 @@ const BACKEND_URL = `http://localhost:3000/api/`;
 const DEFAULT_HEADERS = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+}
+
+// Store userToken for API Call
+let userToken = "";
+
+/**
+ * authenticateHeaders - method for getting userToken Authorization header
+ */
+export function authenticateHeaders() {
+    if (userToken) {
+        return Promise.resolve({
+            Authorization: `Bearer ${userToken}`
+        });
+    } else {
+        return AsyncStorage.getItem('access_token')
+            .then((accessToken) => {
+                userToken = accessToken;
+
+                return {
+                    Authorization: `Bearer ${accessToken}`
+                }
+            })
+    }
 }
 
 /**
@@ -25,6 +50,27 @@ export function _form(url, method, headers, params) {
         body: JSON.stringify(params),
     });
 }
+/**
+ * _authenticateForm - method for call API constructor for POST/PUT API with authenticate header
+ * @param {string} url 
+ * @param {string} method 
+ * @param {Object} headers 
+ * @param {Object} params 
+ */
+export function _authenticateForm(url, method, headers, params) {
+    return authenticateHeaders().then((authenticateHeaders) => {
+        console.log(params);
+        return fetch(url, {
+            method: method,
+            headers: {
+                ...DEFAULT_HEADERS,
+                ...headers,
+                ...authenticateHeaders,
+            },
+            body: JSON.stringify(params),
+        });
+    });
+}
 
 /**
  * _get - method for call API constructor for GET API
@@ -34,15 +80,21 @@ export function _form(url, method, headers, params) {
  * @param {Object} params 
  */
 export function _get(url, headers) {
-    return fetch(url, {
-        headers: {
-            ...DEFAULT_HEADERS,
-            ...headers,
-        },
+    return authenticateHeaders().then((authenticateHeaders) => {
+        return fetch(url, {
+            headers: {
+                ...DEFAULT_HEADERS,
+                ...headers,
+                ...authenticateHeaders,
+            },
+        });
     });
 }
 
-
+/**
+ * manageError - Throw error after call API 
+ * @param {Object} responseJson 
+ */
 function manageError(responseJson) {
     if (responseJson && responseJson.error_code) {
         throw responseJson;
@@ -68,17 +120,31 @@ export function signIn(email, password) {
         });
 }
 
+/**
+ * signUp - POST /sessions
+ * @param {string} email 
+ * @param {string} password 
+ */
+export function signUp(email, password) {
+    let url = BACKEND_URL + "users";
+
+    return _form(url, 'POST', null, { email, password })
+        .then((response) => response.json())
+        .then(manageError)
+        .catch((error) => {
+            console.log("signUp()", error);
+            throw error;
+        });
+}
+
 
 /**
  * getUserById - GET /users/:id
  * @param {number} userId
  */
-export function getUserById(userToken, userId) {
+export function getUserById(userId) {
     let url = BACKEND_URL + `users/${userId}`;
-    let headers = {
-        Authorization: `Bearer ${userToken}`
-    }
-    return _get(url, headers)
+    return _get(url)
         .then((response) => response.json())
         .then(manageError)
         .catch((error) => {
@@ -89,15 +155,12 @@ export function getUserById(userToken, userId) {
 
 /**
  * createUserMovie - POST /user_movies
- * @param {Object} params 
+ * @param {Object} params
  */
-export function createUserMovie(userToken, params) {
+export function createUserMovie(params) {
     let url = BACKEND_URL + "user_movies";
-    let headers = {
-        Authorization: `Bearer ${userToken}`
-    }
 
-    return _form(url, 'POST', headers, params)
+    return _authenticateForm(url, 'POST', {}, params)
         .then((response) => response.json())
         .then(manageError)
         .catch((error) => {
@@ -110,13 +173,10 @@ export function createUserMovie(userToken, params) {
  * updateUserMovie - PUT /user_movies
  * @param {Object} params
  */
-export function updateUserMovie(userToken, userMovieId, params) {
+export function updateUserMovie(userMovieId, params) {
     let url = BACKEND_URL + "user_movies/" + userMovieId;
-    let headers = {
-        Authorization: `Bearer ${userToken}`
-    }
 
-    return _form(url, 'PUT', headers, params)
+    return _authenticateForm(url, 'PUT', {}, params)
         .then((response) => response.json())
         .then(manageError)
         .catch((error) => {
