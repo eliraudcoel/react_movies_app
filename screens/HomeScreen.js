@@ -76,11 +76,11 @@ export function HomeScreen({ navigation }) {
      * isConnected - Get user information from accessToken
      */
     async function isConnected() {
-        return AsyncStorage.getItem('access_token')
-            .then((accessToken) => {
-                console.log("ACCESS TOKEN", accessToken);
+        return Promise.all([AsyncStorage.getItem('access_token'), AsyncStorage.getItem('user_id')])
+            .then((values) => {
+                let [accessToken, userId] = values;
                 if (accessToken) {
-                    return getUserById(accessToken, 1)
+                    return getUserById(userId)
                         .then((responseJson) => {
                             console.log(responseJson);
                             updateUser(user => ({
