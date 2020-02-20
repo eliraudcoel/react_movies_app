@@ -4,8 +4,11 @@ import {
     View,
     Dimensions,
     Text,
+    Platform,
 } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
+
+import Colors from '../constants/Colors';
 
 import { getMovieById } from '../utils/MovieApi';
 import Movie from '../models/Movie';
@@ -14,7 +17,7 @@ import { UserContext } from '../contexts/UserContext';
 import { updateUserMovie, createUserMovie } from '../utils/Api';
 import TabBarInfo from '../components/TabBarInfo';
 
-export function MovieScreen({ navigation }) {
+export default function MovieScreen({ navigation }) {
 
     // States
     const [movieId, setMovieId] = useState(navigation.getParam('movieId', null));
@@ -195,4 +198,14 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MovieScreen;
+// MovieScreen.navigationOptions = {
+//     headerRight: <Icon
+//     type="ionicon"
+//     size={26}
+//     name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
+//     // color={navigation.getParam('isFavorite') ? 'red' : Colors.whiteColor}
+//     underlayColor={Colors.transparent}
+//     containerStyle={{ paddingRight: 15 }}
+//     // onPress={() => navigation.getParam('likeUnlike')(navigation.getParam('isFavorite'), navigation.getParam('movie'))}
+//   />,
+// };

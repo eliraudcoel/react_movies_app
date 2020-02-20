@@ -9,17 +9,17 @@ import {
     AsyncStorage,
 } from 'react-native';
 
+
 import { searchBy } from '../utils/MovieApi';
 import { getUserById } from '../utils/Api';
 import Movies from '../components/Movies';
 import Search from '../components/Search';
 import Colors from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
-import Movie from '../models/Movie';
 
 const SEARCH_THROTTLE = 3;
 
-export function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation }) {
     // States
     const [movies, setMovies] = useState([]);
     const [showLoading, setLoading] = useState(false);
@@ -200,5 +200,3 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
-
-export default HomeScreen;

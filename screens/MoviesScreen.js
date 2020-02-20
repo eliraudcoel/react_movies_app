@@ -49,10 +49,6 @@ export default function MoviesScreen({navigation}) {
   );
 }
 
-MoviesScreen.navigationOptions = {
-  title: 'Your Movies',
-};
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
