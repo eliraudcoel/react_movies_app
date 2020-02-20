@@ -12,6 +12,7 @@ export default function MovieCard(props) {
   let date = new Date(movie.releaseDate).toLocaleDateString('fr-FR', options);
 
   useEffect(() => {
+    console.log("useEffect() - movieCard");
     setMovie(movie);
   }, [movie]);
 

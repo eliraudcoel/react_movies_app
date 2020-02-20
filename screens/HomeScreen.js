@@ -33,18 +33,11 @@ export function HomeScreen({ navigation }) {
         isConnected();
     }, []);
 
-    useEffect(() => {
-        resetForUserMovies();
-    }, [user]);
-
     /**
-     * resetForUserMovies - Reset form and populate with user's movies
+     * resetMovies - Reset form and movies' list
      */
-    resetForUserMovies = () => {
-        if (user && user.movies && user.movies.length > 0) {
-            let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
-            setMovies(formattedMovies);
-        }
+    resetMovies = () => {
+        setMovies([]);
     }
 
     /**
@@ -82,7 +75,6 @@ export function HomeScreen({ navigation }) {
                 if (accessToken) {
                     return getUserById(userId)
                         .then((responseJson) => {
-                            console.log(responseJson);
                             updateUser(user => ({
                                 ...user,
                                 ...responseJson,
@@ -105,8 +97,6 @@ export function HomeScreen({ navigation }) {
         setLoading(true);
 
         return new Promise((resolve, reject) => {
-            console.log(searchText.length);
-            console.log(searchText.length % SEARCH_THROTTLE);
             if (searchText.length > 0 && searchText.length % SEARCH_THROTTLE === 0) {
                 return searchBy(searchText)
                     .then((searchList) => {
@@ -151,7 +141,7 @@ export function HomeScreen({ navigation }) {
                 }}
                 showLoading={showLoading}
                 onClear={() => {
-                    resetForUserMovies();
+                    resetMovies();
                 }}
             />
 

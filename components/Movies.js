@@ -4,10 +4,12 @@ import MovieCard from './MovieCard';
 
 export function Movies(props) {
   const [movies, setMovies] = useState(props.movies);
+  const [isUserMovie, setUserMovie] = useState(props.isUserMovie);
 
   useEffect(() => {
     setMovies(movies);
-  }, [movies]);
+    setUserMovie(isUserMovie);
+  }, [movies, isUserMovie]);
 
   return (
     <FlatList
@@ -17,7 +19,11 @@ export function Movies(props) {
         <MovieCard
           movie={item}
           goToNextScreen={() => {
-            props.navigation.navigate('Movie', { movieId: item.imdbID })
+            if (isUserMovie) {
+              props.navigation.navigate('UserMovie', { movieId: item.imdbID })
+            } else {
+              props.navigation.navigate('Movie', { movieId: item.imdbID })
+            }
           }}
         />
       }

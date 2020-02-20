@@ -59,7 +59,6 @@ export function _form(url, method, headers, params) {
  */
 export function _authenticateForm(url, method, headers, params) {
     return authenticateHeaders().then((authenticateHeaders) => {
-        console.log(params);
         return fetch(url, {
             method: method,
             headers: {

@@ -89,6 +89,7 @@ export function SignInScreen({ navigation }) {
         return signIn(email, password)
             .then((response) => {
                 setLoading(false);
+                console.log("signIn()", response.access_token);
 
                 return Promise.all([
                     storeToken(response.access_token),
@@ -96,12 +97,14 @@ export function SignInScreen({ navigation }) {
                     updateUser(response),
                 ])
                 .then((values) => {
+                    console.log("After Promise.all", values);
                     navigation.navigate('Home');
                 })
             })
             .catch((error) => {
                 console.log(error);
-                // TODO show error
+                // TODO show error (Exceptions::EmailNotFound)
+                setLoading(false);
                 // reject(error);
             })
     }

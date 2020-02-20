@@ -95,6 +95,25 @@ export function MovieScreen({ navigation }) {
     }
 
     /**
+     * Update list of Movie for HomeScren update
+     */
+    updateInformationAfter = (newMovie) => {
+        // FIXME : make it works for update
+        setFavorite(newMovie.favorite);
+
+        updateUser({
+            ...user,
+            movies: {
+                ...user.movies,
+                newMovie
+            }
+        });
+        if (newMovie.favorite) {
+            showTabBarInfo();
+        }
+    }
+
+    /**
      * likeUnlike - Like/Unlike a movie
      */
     likeUnlike = (favorite, movie) => {
@@ -103,26 +122,18 @@ export function MovieScreen({ navigation }) {
             if (user_movie) {
                 updateUserMovie(user_movie.id, {
                     favorite: !favorite
+                }).then((userMovieJson) => {
+                    let newMovie = new Movie(userMovieJson);
+                    updateInformationAfter(newMovie);
                 })
-                    .then((userMovieJson) => {
-                        // of connected -> post like
-                        setFavorite(userMovieJson.favorite);
-                        if (userMovieJson.favorite) {
-                            showTabBarInfo();
-                        }
-                    })
             } else {
                 createUserMovie({
                     ...movie,
                     favorite: !favorite
+                }).then((userMovieJson) => {
+                    let newMovie = new Movie(userMovieJson);
+                    updateInformationAfter(newMovie);
                 })
-                    .then((userMovieJson) => {
-                        // of connected -> post like
-                        setFavorite(userMovieJson.favorite);
-                        if (userMovieJson.favorite) {
-                            showTabBarInfo();
-                        }
-                    })
             }
         } else {
             // of unconnected -> connection screen && post like
