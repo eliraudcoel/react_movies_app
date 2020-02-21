@@ -5,7 +5,9 @@ import {
   View,
   SafeAreaView,
   StatusBar,
+  FlatList,
 } from 'react-native';
+import MovieCard from '../components/MovieCard';
 
 import Movies from '../components/Movies';
 import Colors from '../constants/Colors';
@@ -19,8 +21,11 @@ export default function MoviesScreen({navigation}) {
   // Context
   const [user, updateUser] = useContext(UserContext);
 
+  let toto = false;
+
   // Équivalent à componentDidMount plus componentDidUpdate :
   useEffect(() => {
+    console.log("USE EFFECT MOVIES SCREEN");
     resetForUserMovies();
   }, [user]);
 
@@ -30,20 +35,35 @@ export default function MoviesScreen({navigation}) {
   resetForUserMovies = () => {
     if (user && user.movies && user.movies.length > 0) {
       let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
+      // FIXME : not get last value of favorite
+      console.log("resetForUserMovies() - update movies", formattedMovies);      
       setMovies(formattedMovies);
     }
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
       <View style={styles.moviesContainer}>
         {movies && movies.length > 0 ? (
-          <Movies movies={movies} navigation={navigation} isUserMovie={true} />
+          // <Movies movies={movies} navigation={navigation} isUserMovie={true} />
+          <FlatList
+            data={movies}
+            keyExtractor={item => String(item.imdbID)}
+            renderItem={({ item }) =>
+              <MovieCard
+                movie={item}
+                goToNextScreen={() => {
+                    navigation.navigate('UserMovie', { movieId: item.imdbID })
+                }}
+              />
+            }
+          />
         ) : (
-            <View style={styles.noFilmContainer}>
-              <Text style={styles.noFilm}>Aucun film trouvé</Text>
-            </View>
-          )}
+          <View style={styles.noFilmContainer}>
+            <Text style={styles.noFilm}>Vous n'avez pas ajouté de film !</Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

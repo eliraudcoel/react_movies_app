@@ -101,19 +101,33 @@ export default function MovieScreen({ navigation }) {
      * Update list of Movie for HomeScren update
      */
     updateInformationAfter = (newMovie) => {
-        // FIXME : make it works for update
+        // Update favorite
         setFavorite(newMovie.favorite);
-
-        updateUser({
-            ...user,
-            movies: {
-                ...user.movies,
-                newMovie
-            }
-        });
         if (newMovie.favorite) {
             showTabBarInfo();
         }
+
+        // Get userMovies list
+        let userMovies = user.movies;
+        let foundMovie = userMovies.filter((movie) => movie.imdbID === newMovie.imdbID)[0];
+        let userMoviesId = userMovies.map((movie) => movie.imdbID)
+
+        // If found => update favorite
+        if (foundMovie) {
+            userMovies.splice(userMoviesId.indexOf(newMovie.imdbID), 1, {
+                ...foundMovie,
+                favorite: newMovie.favorite
+            });
+        } else {
+            // Else create movie on list
+            userMovies.push(newMovie);
+        }
+
+        // Update userMovies
+        updateUser({
+            ...user,
+            movies: userMovies,
+        });
     }
 
     /**
@@ -197,15 +211,3 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     }
 });
-
-// MovieScreen.navigationOptions = {
-//     headerRight: <Icon
-//     type="ionicon"
-//     size={26}
-//     name={Platform.OS === 'ios' ? 'ios-heart' : 'md-heart'}
-//     // color={navigation.getParam('isFavorite') ? 'red' : Colors.whiteColor}
-//     underlayColor={Colors.transparent}
-//     containerStyle={{ paddingRight: 15 }}
-//     // onPress={() => navigation.getParam('likeUnlike')(navigation.getParam('isFavorite'), navigation.getParam('movie'))}
-//   />,
-// };

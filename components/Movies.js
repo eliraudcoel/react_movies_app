@@ -5,11 +5,19 @@ import MovieCard from './MovieCard';
 export function Movies(props) {
   const [movies, setMovies] = useState(props.movies);
   const [isUserMovie, setUserMovie] = useState(props.isUserMovie);
+  
+  useEffect(() => {
+    console.log("USE EFFET !!!!!!");
+  }, []);
 
   useEffect(() => {
+    console.log("USE EFFET - MOVIES", movies);
     setMovies(movies);
+  }, [movies]);
+
+  useEffect(() => {
     setUserMovie(isUserMovie);
-  }, [movies, isUserMovie]);
+  }, [isUserMovie]);
 
   return (
     <FlatList
