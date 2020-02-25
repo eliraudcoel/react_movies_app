@@ -6,7 +6,9 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
+  Platform,
 } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import MovieCard from '../components/MovieCard';
 
 import Movies from '../components/Movies';
@@ -14,7 +16,7 @@ import Colors from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
 import Movie from '../models/Movie';
 
-export default function MoviesScreen({navigation}) {
+export default function MoviesScreen({ navigation }) {
   // States
   const [movies, setMovies] = useState([]);
 
@@ -25,9 +27,14 @@ export default function MoviesScreen({navigation}) {
 
   // Équivalent à componentDidMount plus componentDidUpdate :
   useEffect(() => {
-    console.log("USE EFFECT MOVIES SCREEN");
+    console.log("MoviesScreen - USER useEffect()");
     resetForUserMovies();
   }, [user]);
+
+  useEffect(() => {
+    console.log("MoviesScreen - MOVIES useEffect()");
+    console.log(movies);
+  }, [movies]);
 
   /**
    * resetForUserMovies - Reset form and populate with user's movies
@@ -36,7 +43,7 @@ export default function MoviesScreen({navigation}) {
     if (user && user.movies && user.movies.length > 0) {
       let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
       // FIXME : not get last value of favorite
-      console.log("resetForUserMovies() - update movies", formattedMovies);      
+      console.log("resetForUserMovies() - update movies", formattedMovies);
       setMovies(formattedMovies);
     }
   }
@@ -45,25 +52,28 @@ export default function MoviesScreen({navigation}) {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
       <View style={styles.moviesContainer}>
-        {movies && movies.length > 0 ? (
-          // <Movies movies={movies} navigation={navigation} isUserMovie={true} />
-          <FlatList
-            data={movies}
-            keyExtractor={item => String(item.imdbID)}
-            renderItem={({ item }) =>
-              <MovieCard
-                movie={item}
-                goToNextScreen={() => {
-                    navigation.navigate('UserMovie', { movieId: item.imdbID })
-                }}
-              />
+        <FlatList
+          data={movies}
+          extraData={movies}
+          keyExtractor={item => String(item.imdbID)}
+          renderItem={({ item }) =>
+            <ListItem
+              onPress={() => navigation.navigate('UserMovie', { movieId: item.imdbID })}
+              leftAvatar={{ rounded: false, source: { uri: item.posterPath } }}
+              title={item.title}
+              titleProps={{ numberOfLines: 1 }}
+              titleStyle={{ color: Colors.tintColor }}
+              subtitle={new Date(item.releaseDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
+              rightIcon={{
+                name: Platform.OS === 'ios' ? 'ios-heart' : 'md-heart',
+                type: "ionicon",
+                color: item.favorite ? Colors.redColor : Colors.greyColor,
+              }}
+              bottomDivider
+              chevron={{ color: Colors.lightTintColorDarker }}
+            />
             }
-          />
-        ) : (
-          <View style={styles.noFilmContainer}>
-            <Text style={styles.noFilm}>Vous n'avez pas ajouté de film !</Text>
-          </View>
-        )}
+        />
       </View>
     </SafeAreaView>
   );

@@ -81,6 +81,7 @@ export default function MovieScreen({ navigation }) {
      */
     getUserMovie = () => {
         if (user && user.movies) {
+            console.log(user, user.movies);
             return user.movies.filter((movie) => movie.imdbID === movieId)[0];
         }
         
@@ -101,11 +102,23 @@ export default function MovieScreen({ navigation }) {
      * Update list of Movie for HomeScren update
      */
     updateInformationAfter = (newMovie) => {
+        // FIXME : make it works for update
+
         // Update favorite
         setFavorite(newMovie.favorite);
         if (newMovie.favorite) {
             showTabBarInfo();
         }
+
+        /*
+        updateUser({
+            ...user,
+            movies: {
+                ...user.movies,
+                newMovie
+            }
+        });
+        */
 
         // Get userMovies list
         let userMovies = user.movies;
