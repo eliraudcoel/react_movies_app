@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, Platform } from 'react-native';
 import { Icon } from 'react-native-elements';
+import Colors from '../constants/Colors';
 
 export default function TabBarInfo(props) {
     return (
@@ -36,7 +37,7 @@ const styles = {
             },
         }),
         alignItems: 'center',
-        backgroundColor: '#fbfbfb',
+        backgroundColor: Colors.whiteColor,
         paddingVertical: 20,
     },
     tabBarInfoText: {

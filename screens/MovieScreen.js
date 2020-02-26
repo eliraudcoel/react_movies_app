@@ -4,12 +4,8 @@ import {
     View,
     Dimensions,
     Text,
-    Platform,
 } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
-
-import Colors from '../constants/Colors';
-
+import { Button } from 'react-native-elements';
 import { getMovieById } from '../utils/MovieApi';
 import Movie from '../models/Movie';
 import ParallaxView from '../components/ParallaxView';
@@ -84,7 +80,7 @@ export default function MovieScreen({ navigation }) {
             console.log(user, user.movies);
             return user.movies.filter((movie) => movie.imdbID === movieId)[0];
         }
-        
+
         return null;
     }
 
@@ -109,16 +105,6 @@ export default function MovieScreen({ navigation }) {
         if (newMovie.favorite) {
             showTabBarInfo();
         }
-
-        /*
-        updateUser({
-            ...user,
-            movies: {
-                ...user.movies,
-                newMovie
-            }
-        });
-        */
 
         // Get userMovies list
         let userMovies = user.movies;
@@ -183,6 +169,9 @@ export default function MovieScreen({ navigation }) {
             windowHeight={height * 0.4}
             scrollableViewStyle={[styles.scrollView, styles.borderRadius]}
             style={styles.borderRadius}
+            bottomContainer={(
+                showFavoriteAdd && <TabBarInfo />
+            )}
         >
             <View style={[styles.containerView, styles.borderRadius]}>
                 <Text style={styles.containerText}>{movie && date()}</Text>
@@ -193,9 +182,6 @@ export default function MovieScreen({ navigation }) {
                     style={styles.button}
                 />
             </View>
-            {showFavoriteAdd &&
-                <TabBarInfo />
-            }
         </ParallaxView>
     );
 }
