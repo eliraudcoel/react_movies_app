@@ -26,10 +26,17 @@ export default function MoviesScreen({ navigation }) {
   let toto = false;
 
   // Équivalent à componentDidMount plus componentDidUpdate :
+
+  /**
+   * Listen user change from UserContext
+  */
   useEffect(() => {
     resetForUserMovies();
   }, [user]);
 
+  /**
+   * Listen movies change
+  */
   useEffect(() => {
     console.log(movies);
   }, [movies]);

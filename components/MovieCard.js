@@ -11,6 +11,13 @@ export default function MovieCard(props) {
   // variable for dates
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   
+  /**
+   * Tip: On useEffect() we must listen "props" update
+  */
+
+  /**
+   * Listen props.movie change from Parent Movies
+  */
   useEffect(() => {
     setMovie(props.movie);
     setDate(new Date(props.movie.releaseDate).toLocaleDateString('fr-FR', options));

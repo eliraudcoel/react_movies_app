@@ -6,10 +6,20 @@ export function Movies(props) {
   const [movies, setMovies] = useState(props.movies);
   const [nextScreen, setNextScreen] = useState(props.nextScreen);
 
+  /**
+   * Tip: On useEffect() we must listen "props" update
+  */
+
+  /**
+   * Listen props.movies change from Parent
+  */
   useEffect(() => {
     setMovies(props.movies);
   }, [props.movies]);
 
+  /**
+   * Listen props.nextScreen change from Parent
+  */
   useEffect(() => {
     setNextScreen(props.nextScreen);
   }, [props.nextScreen]);
