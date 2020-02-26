@@ -4,34 +4,26 @@ import MovieCard from './MovieCard';
 
 export function Movies(props) {
   const [movies, setMovies] = useState(props.movies);
-  const [isUserMovie, setUserMovie] = useState(props.isUserMovie);
-  
-  useEffect(() => {
-    console.log("USE EFFET !!!!!!");
-  }, []);
+  const [nextScreen, setNextScreen] = useState(props.nextScreen);
 
   useEffect(() => {
-    console.log("USE EFFET - MOVIES", movies);
-    setMovies(movies);
-  }, [movies]);
+    setMovies(props.movies);
+  }, [props.movies]);
 
   useEffect(() => {
-    setUserMovie(isUserMovie);
-  }, [isUserMovie]);
+    setNextScreen(props.nextScreen);
+  }, [props.nextScreen]);
 
   return (
     <FlatList
       data={movies}
+      extraData={movies}
       keyExtractor={item => String(item.imdbID)}
       renderItem={({ item }) =>
         <MovieCard
           movie={item}
           goToNextScreen={() => {
-            if (isUserMovie) {
-              props.navigation.navigate('UserMovie', { movieId: item.imdbID })
-            } else {
-              props.navigation.navigate('Movie', { movieId: item.imdbID })
-            }
+            props.navigation.navigate(nextScreen, { movieId: item.imdbID })
           }}
         />
       }

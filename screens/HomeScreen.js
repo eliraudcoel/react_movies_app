@@ -147,7 +147,7 @@ export default function HomeScreen({ navigation }) {
 
             <View style={styles.pageContainer}>
                 {movies && movies.length > 0 ? (
-                    <Movies movies={movies} navigation={navigation} />
+                    <Movies movies={movies} navigation={navigation} nextScreen='Movie' />
                 ) : (
                     <View style={styles.noFilmContainer}>
                         <Text style={styles.noFilm}>Aucun film trouvé</Text>

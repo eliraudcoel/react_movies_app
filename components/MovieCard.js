@@ -6,15 +6,15 @@ import Colors from '../constants/Colors';
 export default function MovieCard(props) {
   // States
   const [movie, setMovie] = useState(props.movie);
+  const [date, setDate] = useState(null);
 
   // variable for dates
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
-  let date = new Date(movie.releaseDate).toLocaleDateString('fr-FR', options);
-
+  
   useEffect(() => {
-    console.log("useEffect() - movieCard");
-    setMovie(movie);
-  }, [movie]);
+    setMovie(props.movie);
+    setDate(new Date(props.movie.releaseDate).toLocaleDateString('fr-FR', options));
+  }, [props.movie]);
 
   return (
     <ListItem

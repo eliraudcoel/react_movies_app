@@ -27,12 +27,10 @@ export default function MoviesScreen({ navigation }) {
 
   // Équivalent à componentDidMount plus componentDidUpdate :
   useEffect(() => {
-    console.log("MoviesScreen - USER useEffect()");
     resetForUserMovies();
   }, [user]);
 
   useEffect(() => {
-    console.log("MoviesScreen - MOVIES useEffect()");
     console.log(movies);
   }, [movies]);
 
@@ -42,8 +40,6 @@ export default function MoviesScreen({ navigation }) {
   resetForUserMovies = () => {
     if (user && user.movies && user.movies.length > 0) {
       let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
-      // FIXME : not get last value of favorite
-      console.log("resetForUserMovies() - update movies", formattedMovies);
       setMovies(formattedMovies);
     }
   }
@@ -52,28 +48,13 @@ export default function MoviesScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
       <View style={styles.moviesContainer}>
-        <FlatList
-          data={movies}
-          extraData={movies}
-          keyExtractor={item => String(item.imdbID)}
-          renderItem={({ item }) =>
-            <ListItem
-              onPress={() => navigation.navigate('UserMovie', { movieId: item.imdbID })}
-              leftAvatar={{ rounded: false, source: { uri: item.posterPath } }}
-              title={item.title}
-              titleProps={{ numberOfLines: 1 }}
-              titleStyle={{ color: Colors.tintColor }}
-              subtitle={new Date(item.releaseDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: 'numeric' })}
-              rightIcon={{
-                name: Platform.OS === 'ios' ? 'ios-heart' : 'md-heart',
-                type: "ionicon",
-                color: item.favorite ? Colors.redColor : Colors.greyColor,
-              }}
-              bottomDivider
-              chevron={{ color: Colors.lightTintColorDarker }}
-            />
-            }
-        />
+        {movies && movies.length > 0 ? (
+          <Movies movies={movies} navigation={navigation} nextScreen='UserMovie' />
+        ) : (
+          <View style={styles.noFilmContainer}>
+            <Text style={styles.noFilm}>Vous n'avez pas ajouté de film !</Text>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
