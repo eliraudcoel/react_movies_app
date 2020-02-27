@@ -130,6 +130,31 @@ export default function MovieScreen({ navigation }) {
     }
 
     /**
+     * errorReport - Display error if Token has expired
+     * @param {Object} error 
+     */
+    async function errorReport(error) {
+        return new Promise((resolve, reject) => {
+            switch (error.error_code) {
+                case "Exceptions::InvalidToken":
+                    // Invalid token OR Token expired
+                    // AsyncStorage.removeItem('access_token')
+                    //     .then(() => {
+                    navigation.navigate('SignIn', {
+                        redirectTo: 'Home',
+                        error: error.details.message
+                    });
+                    resolve();
+                    // })
+                    break;
+                default:
+                    resolve();
+                    break;
+            }
+        })
+    }
+
+    /**
      * likeUnlike - Like/Unlike a movie
      */
     likeUnlike = (favorite, movie) => {
@@ -141,7 +166,10 @@ export default function MovieScreen({ navigation }) {
                 }).then((userMovieJson) => {
                     let newMovie = new Movie(userMovieJson);
                     updateInformationAfter(newMovie);
-                })
+                }).catch((error) => {
+                    console.log("updateUserMovie", error);
+                    return errorReport(error);
+                });
             } else {
                 createUserMovie({
                     ...movie,
@@ -149,7 +177,10 @@ export default function MovieScreen({ navigation }) {
                 }).then((userMovieJson) => {
                     let newMovie = new Movie(userMovieJson);
                     updateInformationAfter(newMovie);
-                })
+                }).catch((error) => {
+                    console.log("createUserMovie", error);
+                    return errorReport(error);
+                });
             }
         } else {
             // of unconnected -> connection screen && post like

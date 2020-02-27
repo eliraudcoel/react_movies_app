@@ -6,10 +6,15 @@ import Colors from '../constants/Colors';
 export default function ErrorModal(props) {
     // States
     const [visible, setVisible] = useState(props.visible);
+    const [error, setError] = useState(props.error);
 
     useEffect(() => {
-        setVisible(visible);
-    }, [visible]);
+        setVisible(props.visible);
+    }, [props.visible]);
+
+    useEffect(() => {
+        setError(props.error);
+    }, [props.error]);
 
     return (
         <Overlay
@@ -29,13 +34,13 @@ export default function ErrorModal(props) {
                 />
                 <View style={{ paddingTop: 20, paddingBottom: 20, alignItems: "center"}}>
                     <Text style={{textAlign: "center", paddingBottom: 5, paddingTop: 5}}>Oups!</Text>
-                    <Text style={{textAlign: "center", paddingBottom: 5, paddingTop: 5}}>Votre session à expirer</Text>
-                    <Text style={{textAlign: "center", paddingBottom: 5, paddingTop: 5}}>Afin de profiter de notre service, veuillez vous identifier à nouveau.</Text>
+                    <Text style={{textAlign: "center", paddingBottom: 5, paddingTop: 5}}>{error.title}</Text>
+                    <Text style={{textAlign: "center", paddingBottom: 5, paddingTop: 5}}>{error.body}</Text>
                 </View>
                 <Button
                     title="Compris"
                     type="clear"
-                    onPress={() => setVisible(false)}
+                    onPress={() => props.closeModal()}
                 />
             </View>
         </Overlay>

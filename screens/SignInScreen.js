@@ -30,6 +30,7 @@ export function SignInScreen({ navigation }) {
     const [redirectTo, setRedirectTo] = useState(navigation.getParam('redirectTo', null));
     const [redirectParams, setRedirectParams] = useState(navigation.getParam('redirectParams', {}));
     const [error, setError] = useState(navigation.getParam('error', null));
+    const [errorVisible, setErrorVisible] = useState(false);
 
     // User context
     const [user, updateUser] = useContext(UserContext);
@@ -46,6 +47,10 @@ export function SignInScreen({ navigation }) {
             Keyboard.removeAllListeners('keyboardDidHide');
         };
     }, []);
+
+    useEffect(() => {
+        setErrorVisible(true);
+    }, [error]);
 
     _keyboardDidShow = () => {
         setButtonStyle({
@@ -83,6 +88,32 @@ export function SignInScreen({ navigation }) {
             })
     }
 
+    /**
+     * errorReport - Display error if Token has expired
+     * @param {Object} error 
+     */
+    async function errorReport(error) {
+        return new Promise((resolve, reject) => {
+            switch (error.error_code) {
+                case "Exceptions::EmailNotFound":
+                    setError({
+                        title: 'Votre email est introuvable',
+                        body: "Nous n'avons pas trouvé votre email dans notre base, vous êtes bien inscris ici ?"
+                    })
+                    break;
+                case "Exceptions::InvalidPassword":
+                    setError({
+                        title: 'Votre mot de passe est incorrect',
+                        body: "Vous avez un trou de mémoire ? Pas de panique, cliquez sur mot de passe oublié ;)"
+                    })
+                    break;
+                default:
+                    break;
+            }
+            resolve();
+        })
+    }
+
     connect = () => {
         setLoading(true);
 
@@ -95,17 +126,15 @@ export function SignInScreen({ navigation }) {
                     storeToken(response.access_token),
                     storeId(response.id),
                     updateUser(response),
-                ])
-                .then((values) => {
+                ]).then((values) => {
                     console.log("After Promise.all", values);
                     navigation.navigate('Home');
                 })
             })
             .catch((error) => {
-                console.log(error);
-                // TODO show error (Exceptions::EmailNotFound)
                 setLoading(false);
-                // reject(error);
+                console.log(error);
+                return errorReport(error);
             })
     }
 
@@ -182,7 +211,7 @@ export function SignInScreen({ navigation }) {
                 </View>
             </View>
 
-            <ErrorModal visible={!!error} />
+            <ErrorModal visible={errorVisible} error={error} closeModal={() => setErrorVisible(false)}/>
 
         </ParallaxView>
     );

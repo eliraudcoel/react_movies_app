@@ -53,7 +53,10 @@ export default function HomeScreen({ navigation }) {
                     //     .then(() => {
                     navigation.navigate('SignIn', {
                         redirectTo: 'Home',
-                        error: error.details.message
+                        error: {
+                            title: 'Votre session à expirer',
+                            body: 'Afin de profiter de notre service, veuillez vous identifier à nouveau.'
+                        }
                     });
                     resolve();
                     // })
@@ -149,10 +152,10 @@ export default function HomeScreen({ navigation }) {
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} nextScreen='Movie' />
                 ) : (
-                    <View style={styles.noFilmContainer}>
-                        <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                    </View>
-                )}
+                        <View style={styles.noFilmContainer}>
+                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                        </View>
+                    )}
             </View>
         </SafeAreaView>
     )
