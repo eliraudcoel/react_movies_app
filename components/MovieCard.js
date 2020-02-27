@@ -19,6 +19,7 @@ export default function MovieCard(props) {
    * Listen props.movie change from Parent Movies
   */
   useEffect(() => {
+    console.log(props.movie.posterPath);
     setMovie(props.movie);
     setDate(new Date(props.movie.releaseDate).toLocaleDateString('fr-FR', options));
   }, [props.movie]);

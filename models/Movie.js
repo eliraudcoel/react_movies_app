@@ -11,6 +11,15 @@ export default class Movie {
     tagline = null;
     favorite = null;
 
+    getPath(path) {
+        regpexp = new RegExp(/https:\/\/image.tmdb.org\/t\/p\/original/);
+        if(path.match(regpexp)) {
+            return path;
+        } else {
+            return `https://image.tmdb.org/t/p/original${path}`;
+        }
+    }
+
     constructor(params) {
         // Verify if it's ok with id (userMovie model vs id from movie API)
         this.userMovieId = this.userMovieId || params.id;
@@ -18,8 +27,8 @@ export default class Movie {
         this.title = this.title || params.title;
         this.overview = this.overview || params.overview;
         this.genreIds = this.genreIds || params.genre_ids;
-        this.posterPath = this.posterPath || "https://image.tmdb.org/t/p/original" + params.poster_path;
-        this.backdropPath = this.backdropPath || "https://image.tmdb.org/t/p/original" + params.backdrop_path;
+        this.posterPath = this.posterPath || this.getPath(params.poster_path);
+        this.backdropPath = this.backdropPath || this.getPath(params.backdrop_path);
         this.voteAverage = this.voteAverage || params.vote_average;
         this.releaseDate = this.releaseDate || params.release_date;
         this.tagline = this.tagline || params.tagline;

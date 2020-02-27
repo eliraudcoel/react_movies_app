@@ -25,6 +25,7 @@ export function authenticateHeaders() {
         return AsyncStorage.getItem('access_token')
             .then((accessToken) => {
                 userToken = accessToken;
+                console.log("accessToken", accessToken);
 
                 return {
                     Authorization: `Bearer ${accessToken}`

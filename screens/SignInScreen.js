@@ -127,7 +127,6 @@ export function SignInScreen({ navigation }) {
                     storeId(response.id),
                     updateUser(response),
                 ]).then((values) => {
-                    console.log("After Promise.all", values);
                     navigation.navigate('Home');
                 })
             })

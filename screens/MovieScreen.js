@@ -77,7 +77,6 @@ export default function MovieScreen({ navigation }) {
      */
     getUserMovie = () => {
         if (user && user.movies) {
-            console.log(user, user.movies);
             return user.movies.filter((movie) => movie.imdbID === movieId)[0];
         }
 
