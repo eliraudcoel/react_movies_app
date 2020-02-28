@@ -1,3 +1,6 @@
+const IMAGE_URI = 'https://image.tmdb.org/t/p/original';
+const IMAGE_REGEXP = new RegExp(/https:\/\/image.tmdb.org\/t\/p\/original/);
+
 export default class Movie {
     userMovieId = null;
     imdbID = null;
@@ -11,12 +14,16 @@ export default class Movie {
     tagline = null;
     favorite = null;
 
+
     getPath(path) {
-        regpexp = new RegExp(/https:\/\/image.tmdb.org\/t\/p\/original/);
-        if(path.match(regpexp)) {
+        if (!path) {
+            return null;
+        }
+
+        if (path.match(IMAGE_REGEXP)) {
             return path;
         } else {
-            return `https://image.tmdb.org/t/p/original${path}`;
+            return `${IMAGE_URI}${path}`;
         }
     }
 
