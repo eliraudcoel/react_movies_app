@@ -49,7 +49,9 @@ export function SignInScreen({ navigation }) {
     }, []);
 
     useEffect(() => {
-        setErrorVisible(true);
+        if (error) {
+            setErrorVisible(true);
+        }
     }, [error]);
 
     _keyboardDidShow = () => {
@@ -210,7 +212,7 @@ export function SignInScreen({ navigation }) {
                 </View>
             </View>
 
-            <ErrorModal visible={errorVisible} error={error} closeModal={() => setErrorVisible(false)}/>
+            <ErrorModal visible={errorVisible} error={error} closeModal={() => setErrorVisible(false)} />
 
         </ParallaxView>
     );
