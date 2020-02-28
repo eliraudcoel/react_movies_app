@@ -35,13 +35,6 @@ export default function MoviesScreen({ navigation }) {
   }, [user]);
 
   /**
-   * Listen movies change
-  */
-  useEffect(() => {
-    console.log(movies);
-  }, [movies]);
-
-  /**
    * resetForUserMovies - Reset form and populate with user's movies
    */
   resetForUserMovies = () => {

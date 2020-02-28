@@ -129,7 +129,11 @@ export function SignInScreen({ navigation }) {
                     storeId(response.id),
                     updateUser(response),
                 ]).then((values) => {
-                    navigation.navigate('Home');
+                    if (redirectTo) {
+                        goBack();
+                    } else {
+                        navigation.navigate('Home');
+                    }
                 })
             })
             .catch((error) => {

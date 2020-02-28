@@ -97,8 +97,6 @@ export default function MovieScreen({ navigation }) {
      * Update list of Movie for HomeScren update
      */
     updateInformationAfter = (newMovie) => {
-        // FIXME : make it works for update
-
         // Update favorite
         setFavorite(newMovie.favorite);
         if (newMovie.favorite) {
