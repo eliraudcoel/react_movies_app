@@ -49,17 +49,19 @@ export default function HomeScreen({ navigation }) {
             switch (error.error_code) {
                 case "Exceptions::InvalidToken":
                     // Invalid token OR Token expired
-                    // AsyncStorage.removeItem('access_token')
-                    //     .then(() => {
-                    navigation.navigate('SignIn', {
-                        redirectTo: 'Home',
-                        error: {
-                            title: 'Votre session à expirer',
-                            body: 'Afin de profiter de notre service, veuillez vous identifier à nouveau.'
-                        }
+                    return Promise.all([
+                        AsyncStorage.removeItem('access_token'),
+                        AsyncStorage.removeItem('user_id')
+                    ]).then(() => {
+                        navigation.navigate('SignIn', {
+                            redirectTo: 'Home',
+                            error: {
+                                title: 'Votre session à expirer',
+                                body: 'Afin de profiter de notre service, veuillez vous identifier à nouveau.'
+                            }
+                        });
+                        resolve();
                     });
-                    resolve();
-                    // })
                     break;
                 default:
                     resolve();
@@ -75,6 +77,8 @@ export default function HomeScreen({ navigation }) {
         return Promise.all([AsyncStorage.getItem('access_token'), AsyncStorage.getItem('user_id')])
             .then((values) => {
                 let [accessToken, userId] = values;
+
+                console.log("isConnected()", accessToken, userId);
                 if (accessToken) {
                     return getUserById(userId)
                         .then((responseJson) => {

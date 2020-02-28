@@ -17,21 +17,15 @@ let userToken = "";
  * authenticateHeaders - method for getting userToken Authorization header
  */
 export function authenticateHeaders() {
-    if (userToken) {
-        return Promise.resolve({
-            Authorization: `Bearer ${userToken}`
-        });
-    } else {
-        return AsyncStorage.getItem('access_token')
-            .then((accessToken) => {
-                userToken = accessToken;
-                console.log("accessToken", accessToken);
+    return AsyncStorage.getItem('access_token')
+        .then((accessToken) => {
+            userToken = accessToken;
+            console.log("accessToken from AsyncStorage", accessToken);
 
-                return {
-                    Authorization: `Bearer ${accessToken}`
-                }
-            })
-    }
+            return {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
 }
 
 /**

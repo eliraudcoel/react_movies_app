@@ -137,14 +137,16 @@ export default function MovieScreen({ navigation }) {
             switch (error.error_code) {
                 case "Exceptions::InvalidToken":
                     // Invalid token OR Token expired
-                    // AsyncStorage.removeItem('access_token')
-                    //     .then(() => {
-                    navigation.navigate('SignIn', {
-                        redirectTo: 'Home',
-                        error: error.details.message
-                    });
-                    resolve();
-                    // })
+                    return Promise.all([
+                        AsyncStorage.removeItem('access_token'),
+                        AsyncStorage.removeItem('user_id')
+                    ]).then(() => {
+                        navigation.navigate('SignIn', {
+                            redirectTo: 'Home',
+                            error: error.details.message
+                        });
+                        resolve();
+                    })
                     break;
                 default:
                     resolve();
