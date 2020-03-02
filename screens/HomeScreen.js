@@ -95,6 +95,27 @@ export default function HomeScreen({ navigation }) {
             });
     }
 
+
+    improveMoviesList = (moviesList) => {
+        if (!user || user.movies.length <= 0) {
+            return moviesList;
+        }
+
+        // Get imdbID of every favorite movies of a User
+        let favoriteIds = user.movies.filter((movie) => movie.favorite).map((movie) => movie.imdbID);
+
+        // Insert on movies favorite heart on list
+        let favoriteAndMovieList = moviesList.map((movie) => {
+            return {
+                ...movie,
+                favorite: favoriteIds.includes(movie.imdbID)
+            };
+        });
+
+        return favoriteAndMovieList;
+
+    }
+
     /**
      * updateSearch - Search film on API movie call
      * @param {String} searchText 
@@ -107,7 +128,8 @@ export default function HomeScreen({ navigation }) {
             if (searchText.length > 0 && searchText.length % SEARCH_THROTTLE === 0) {
                 return searchBy(searchText)
                     .then((searchList) => {
-                        setMovies(searchList);
+                        let moviesList = improveMoviesList(searchList);
+                        setMovies(moviesList);
                         setLoading(false);
                         resolve();
                     })
