@@ -178,10 +178,10 @@ export default function HomeScreen({ navigation }) {
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} nextScreen='Movie' />
                 ) : (
-                        <View style={styles.noFilmContainer}>
-                            <Text style={styles.noFilm}>Aucun film trouvé</Text>
-                        </View>
-                    )}
+                    <View style={styles.noFilmContainer}>
+                        <Text style={styles.noFilm}>Aucun film trouvé</Text>
+                    </View>
+                )}
             </View>
         </SafeAreaView>
     )

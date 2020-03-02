@@ -145,7 +145,21 @@ MoviesStack.path = '';
 */
 const SettingsStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Settings: {
+      screen: SettingsScreen,
+      navigationOptions: () => {
+        return {
+          headerBackTitle: null,
+          headerTransparent: true,
+          headerTintColor: Colors.lightColor,
+          headerStyle: {
+            borderBottomWidth: 0,
+            backgroundColor: Colors.tintColor
+          },
+          title: 'Réglages'
+        }
+      }
+    }
   },
   config
 );

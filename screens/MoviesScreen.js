@@ -8,8 +8,9 @@ import {
   FlatList,
   Platform,
 } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import MovieCard from '../components/MovieCard';
+
+// Safe Area
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import Movies from '../components/Movies';
 import Colors from '../constants/Colors';
@@ -17,6 +18,9 @@ import { UserContext } from '../contexts/UserContext';
 import Movie from '../models/Movie';
 
 export default function MoviesScreen({ navigation }) {
+  // Get SafeArea details - came from SafeAreaProvider declare on App.js file
+  const insets = useSafeArea();
+
   // States
   const [movies, setMovies] = useState([]);
 
@@ -47,7 +51,7 @@ export default function MoviesScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
-      <View style={styles.moviesContainer}>
+      <View style={[styles.moviesContainer, { paddingTop: insets.top }]}>
         {movies && movies.length > 0 ? (
           <Movies movies={movies} navigation={navigation} nextScreen='UserMovie' />
         ) : (
@@ -68,6 +72,5 @@ const styles = StyleSheet.create({
   moviesContainer: {
     flex: 1,
     backgroundColor: Colors.whiteColor,
-    paddingTop: 44,
   }
 });
