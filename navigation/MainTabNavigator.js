@@ -154,7 +154,7 @@ const SettingsStack = createStackNavigator(
           headerTintColor: Colors.lightColor,
           headerStyle: {
             borderBottomWidth: 0,
-            backgroundColor: Colors.tintColor
+            backgroundColor: Colors.lightTintColorDarker
           },
           title: 'Réglages'
         }
