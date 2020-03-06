@@ -1,9 +1,11 @@
 import { AsyncStorage } from 'react-native';
 
 // URLS
-const BACKEND_URL = `http://localhost:3000/api/`;
-// TODO : make it https
-// const BACKEND_URL = `https://localhost:3000/api/`;
+
+// DEV
+// const BACKEND_URL = `http://localhost:3000/api/`;
+// PROD
+const BACKEND_URL = `https://rails-movies-app.herokuapp.com/api/`;
 
 const DEFAULT_HEADERS = {
     Accept: 'application/json',
