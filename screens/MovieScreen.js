@@ -157,10 +157,10 @@ export default function MovieScreen({ navigation }) {
      * likeUnlike - Like/Unlike a movie
      */
     likeUnlike = (favorite, movie) => {
-        user_movie = getUserMovie();
+        userMovie = getUserMovie();
         if (user) {
-            if (user_movie) {
-                updateUserMovie(user_movie.id, {
+            if (userMovie) {
+                updateUserMovie(userMovie.userMovieId, {
                     favorite: !favorite
                 }).then((userMovieJson) => {
                     let newMovie = new Movie(userMovieJson);
