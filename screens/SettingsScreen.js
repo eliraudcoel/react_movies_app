@@ -77,7 +77,7 @@ export default function SettingsScreen({ navigation }) {
         {!user &&
           <View style={{ flex: 1, justifyContent: "center" }}>
             <Text style={{ color: Colors.whiteColor, fontSize: 20, paddingLeft: 10 }}>
-              Pour proviter du service ... Connectez / Inscrivez vous !
+              Pour profiter du service ... Connectez / Inscrivez vous !
             </Text>
             <Text style={{ color: Colors.whiteColor, fontSize: 20, paddingTop: 20, paddingLeft: 10 }}>
               Allez y c'est gratuit ;)
