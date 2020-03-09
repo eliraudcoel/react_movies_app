@@ -26,7 +26,7 @@ export default function MovieCard(props) {
   return (
     <ListItem
       onPress={() => props.goToNextScreen()}
-      leftAvatar={{ rounded: false, source: { uri: movie.posterPath, cache: 'only-if-cached' } }}
+      leftAvatar={{ rounded: false, source: { uri: movie.posterPath } }}
       title={movie.title}
       titleProps={{ numberOfLines: 1 }}
       titleStyle={{ color: Colors.tintColor }}
