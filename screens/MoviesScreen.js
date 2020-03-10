@@ -5,7 +5,6 @@ import {
   View,
   SafeAreaView,
   StatusBar,
-  FlatList,
   Platform,
 } from 'react-native';
 
@@ -16,6 +15,7 @@ import Movies from '../components/Movies';
 import Colors from '../constants/Colors';
 import { UserContext } from '../contexts/UserContext';
 import Movie from '../models/Movie';
+import { Header } from 'react-navigation';
 
 export default function MoviesScreen({ navigation }) {
   // Get SafeArea details - came from SafeAreaProvider declare on App.js file
@@ -26,10 +26,6 @@ export default function MoviesScreen({ navigation }) {
 
   // Context
   const [user, updateUser] = useContext(UserContext);
-
-  let toto = false;
-
-  // Équivalent à componentDidMount plus componentDidUpdate :
 
   /**
    * Listen user change from UserContext
@@ -51,14 +47,16 @@ export default function MoviesScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
-      <View style={[styles.moviesContainer, { paddingTop: insets.top }]}>
+      <View style={[styles.moviesContainer, {
+        paddingTop: Platform.OS === 'ios' ? insets.top : Header.HEIGHT + insets.top
+      }]}>
         {movies && movies.length > 0 ? (
           <Movies movies={movies} navigation={navigation} nextScreen='UserMovie' />
         ) : (
-          <View style={styles.noFilmContainer}>
-            <Text style={styles.noFilm}>Vous n'avez pas ajouté de film !</Text>
-          </View>
-        )}
+            <View style={styles.noFilmContainer}>
+              <Text style={styles.noFilm}>Vous n'avez pas ajouté de film !</Text>
+            </View>
+          )}
       </View>
     </SafeAreaView>
   );

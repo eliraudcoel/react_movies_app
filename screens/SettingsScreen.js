@@ -6,7 +6,8 @@ import {
   StyleSheet,
   AsyncStorage,
   Text,
-  Dimensions
+  Dimensions,
+  Platform,
 } from 'react-native';
 import { ListItem, Button } from 'react-native-elements';
 import Constants from 'expo-constants'; // 'expo-constants' with the latest SDK to date
@@ -14,8 +15,8 @@ import Constants from 'expo-constants'; // 'expo-constants' with the latest SDK 
 import { useSafeArea } from 'react-native-safe-area-context';
 
 import Colors from '../constants/Colors';
-import ParallaxView from '../components/ParallaxView';
 import { UserContext } from '../contexts/UserContext';
+import { Header } from 'react-navigation';
 
 export default function SettingsScreen({ navigation }) {
   // Get SafeArea details - came from SafeAreaProvider declare on App.js file
@@ -28,8 +29,6 @@ export default function SettingsScreen({ navigation }) {
 
   // Context
   const [user, updateUser] = useContext(UserContext);
-
-  const { height } = Dimensions.get('window');
 
   // Équivalent à componentDidMount plus componentDidUpdate :
   useEffect(() => {
@@ -67,7 +66,9 @@ export default function SettingsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
 
-      <View style={[{ flex: 1, backgroundColor: Colors.lightTintColorDarker }, { paddingTop: insets.top }]}>
+      <View style={[{ flex: 1, backgroundColor: Colors.lightTintColorDarker }, {
+        paddingTop: Platform.OS === 'ios' ? insets.top : Header.HEIGHT + insets.top
+      }]}>
         <View>
           <Text style={{ color: Colors.whiteColor, fontSize: 40, paddingTop: 20, paddingLeft: 10 }}>Bonjour {user ? "" : "!"}</Text>
           {user && user.email &&

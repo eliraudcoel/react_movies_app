@@ -9,7 +9,7 @@ import {
     AsyncStorage,
 } from 'react-native';
 
-
+import { useSafeArea } from 'react-native-safe-area-context';
 import { searchBy } from '../utils/MovieApi';
 import { getUserById } from '../utils/Api';
 import Movies from '../components/Movies';
@@ -27,6 +27,9 @@ export default function HomeScreen({ navigation }) {
 
     // Context
     const [user, updateUser] = useContext(UserContext);
+
+    // Get SafeArea details - came from SafeAreaProvider declare on App.js file
+    const insets = useSafeArea();
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
@@ -153,7 +156,7 @@ export default function HomeScreen({ navigation }) {
                 containerStyle={{
                     backgroundColor: Colors.tintColor,
                     borderBottomWidth: 0,
-                    borderTopWidth: 0,
+                    borderTopWidth: Platform.OS === 'android' ? insets.top : 0,
                 }}
                 inputContainerStyle={{
                     backgroundColor: Colors.tintColor,
@@ -174,7 +177,7 @@ export default function HomeScreen({ navigation }) {
                 }}
             />
 
-            <View style={styles.pageContainer}>
+            <View style={[styles.pageContainer, { paddingTop: Platform.OS === 'ios' ? insets.top : 0 }]}>
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} nextScreen='Movie' />
                 ) : (
@@ -183,7 +186,7 @@ export default function HomeScreen({ navigation }) {
                     </View>
                 )}
             </View>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 
