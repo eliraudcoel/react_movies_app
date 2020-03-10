@@ -39,7 +39,10 @@ export default function MoviesScreen({ navigation }) {
    */
   resetForUserMovies = () => {
     if (user && user.movies && user.movies.length > 0) {
-      let formattedMovies = user.movies.map(movieJson => new Movie(movieJson));
+      let formattedMovies = user.movies.map(movieJson => new Movie({
+        ...movieJson,
+        type: 'userMovie'
+      }));
       setMovies(formattedMovies);
     }
   }

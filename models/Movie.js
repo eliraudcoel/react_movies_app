@@ -29,7 +29,11 @@ export default class Movie {
 
     constructor(params) {
         // Verify if it's ok with id (userMovie model vs id from movie API)
-        this.userMovieId = this.userMovieId || params.id;
+        if (params.type === 'userMovie') {
+            this.userMovieId = this.userMovieId || params.id;
+            this.favorite = this.favorite || params.favorite;
+        }
+
         this.imdbID = this.imdbID || params.imdbID || params.id;
         this.title = this.title || params.title;
         this.overview = this.overview || params.overview;
@@ -39,6 +43,5 @@ export default class Movie {
         this.voteAverage = this.voteAverage || params.voteAverage || params.vote_average;
         this.releaseDate = this.releaseDate || params.releaseDate || params.release_date;
         this.tagline = this.tagline || params.tagline;
-        this.favorite = this.favorite || params.favorite;
     }
 }

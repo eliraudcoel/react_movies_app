@@ -160,10 +160,13 @@ export default function MovieScreen({ navigation }) {
         userMovie = getUserMovie();
         if (user) {
             if (userMovie) {
-                updateUserMovie(userMovie.userMovieId, {
+                updateUserMovie(userMovie.id, {
                     favorite: !favorite
                 }).then((userMovieJson) => {
-                    let newMovie = new Movie(userMovieJson);
+                    let newMovie = new Movie({
+                        ...userMovieJson,
+                        type: 'userMovie'
+                    });
                     updateInformationAfter(newMovie);
                 }).catch((error) => {
                     console.log("updateUserMovie", error);
@@ -174,7 +177,10 @@ export default function MovieScreen({ navigation }) {
                     ...movie,
                     favorite: !favorite
                 }).then((userMovieJson) => {
-                    let newMovie = new Movie(userMovieJson);
+                    let newMovie = new Movie({
+                        ...userMovieJson,
+                        type: 'userMovie'
+                    });
                     updateInformationAfter(newMovie);
                 }).catch((error) => {
                     console.log("createUserMovie", error);

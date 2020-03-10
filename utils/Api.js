@@ -12,9 +12,6 @@ const DEFAULT_HEADERS = {
     'Content-Type': 'application/json',
 }
 
-// Store userToken for API Call
-let userToken = "";
-
 /**
  * authenticateHeaders - method for getting userToken Authorization header
  */
@@ -22,7 +19,7 @@ export function authenticateHeaders() {
     return AsyncStorage.getItem('access_token')
         .then((accessToken) => {
             userToken = accessToken;
-            console.log("accessToken from AsyncStorage", accessToken);
+            // console.log("accessToken from AsyncStorage", accessToken);
 
             return {
                 Authorization: `Bearer ${accessToken}`
