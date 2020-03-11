@@ -148,7 +148,9 @@ export default function HomeScreen({ navigation }) {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {
+            paddingTop: Platform.OS === 'android' ? insets.top : 0,
+        }]}>
             <StatusBar barStyle="light-content" backgroundColor={Colors.transparent} />
             <Search
                 updateCallback={updateSearch}
@@ -156,7 +158,7 @@ export default function HomeScreen({ navigation }) {
                 containerStyle={{
                     backgroundColor: Colors.tintColor,
                     borderBottomWidth: 0,
-                    borderTopWidth: Platform.OS === 'android' ? insets.top : 0,
+                    borderTopWidth: 0,
                 }}
                 inputContainerStyle={{
                     backgroundColor: Colors.tintColor,
