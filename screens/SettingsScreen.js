@@ -33,10 +33,14 @@ export default function SettingsScreen({ navigation }) {
   // Équivalent à componentDidMount plus componentDidUpdate :
   useEffect(() => {
     if (user && user.email) {
-      updateSettingsList([
-        ...settingsList,
-        { title: 'Email', subtitle: user.email, icon: { name: 'email' } }
-      ])
+      // detect if email is already in settingsList
+      let emailFound = settingsList.filter((setting) => setting.title === 'Email')[0];
+      if (!emailFound) {
+        updateSettingsList([
+          ...settingsList,
+          { title: 'Email', subtitle: user.email, icon: { name: 'email' } }
+        ])
+      }
     } else {
       updateSettingsList([
         { title: 'Version', subtitle: Constants.manifest.version, icon: { type: 'ionicon', name: 'ios-bookmarks' } }
