@@ -10,6 +10,7 @@ import {
     Platform,
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
+import { useSafeArea } from 'react-native-safe-area-context';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
@@ -19,7 +20,7 @@ import { UserContext } from '../contexts/UserContext';
 
 export function SignInScreen({ navigation }) {
     // States
-    const [buttonStyle, setButtonStyle] = useState({});
+    const [keyboardOpen, setKeyboardOpen] = useState(false);
     const [showLoading, setLoading] = useState(false);
 
     // Page information
@@ -35,9 +36,12 @@ export function SignInScreen({ navigation }) {
     // User context
     const [user, updateUser] = useContext(UserContext);
 
+    // Get height of the screen
     const { height } = Dimensions.get('window');
 
-    // Équivalent à componentDidMount plus componentDidUpdate :
+    // Get SafeArea details - came from SafeAreaProvider declare on App.js file
+    const insets = useSafeArea();
+
     useEffect(() => {
         Keyboard.addListener('keyboardDidShow', _keyboardDidShow);
         Keyboard.addListener('keyboardDidHide', _keyboardDidHide);
@@ -55,13 +59,12 @@ export function SignInScreen({ navigation }) {
     }, [error]);
 
     _keyboardDidShow = () => {
-        setButtonStyle({
-            paddingBottom: 20,
-        })
+        // Remove paddingBottom only when there are bottom's inset 
+        setKeyboardOpen(true)
     };
 
     _keyboardDidHide = () => {
-        setButtonStyle(null);
+        setKeyboardOpen(false);
     }
 
     goToSignUp = () => {
@@ -172,7 +175,12 @@ export function SignInScreen({ navigation }) {
             bottomContainer={(
                 <Button
                     title="JE ME CONNECTE" type="solid"
-                    buttonStyle={[styles.button, buttonStyle]}
+                    buttonStyle={[styles.button, {
+                        // Logic :
+                        // keyboardOpen => always 20
+                        // if insets on bottom of the page -> set 30
+                        paddingBottom: (keyboardOpen || insets.bottom === 0) ? 20 : 30,
+                    }]}
                     titleStyle={styles.buttonText}
                     onPress={() => connect()}
                     loading={showLoading}
@@ -191,6 +199,11 @@ export function SignInScreen({ navigation }) {
                         autoCompleteType='email'
                         containerStyle={styles.divider}
                         onChangeText={text => this.onChangeEmail(text)}
+                        blurOnSubmit={false}
+
+                        // next button logic => go to next input
+                        returnKeyType="next"
+                        onSubmitEditing={() => { this.passwordInput.focus(); }}
                     />
                     <Input
                         placeholder='Mot de passe'
@@ -198,6 +211,10 @@ export function SignInScreen({ navigation }) {
                         autoCompleteType='password'
                         secureTextEntry={true}
                         onChangeText={text => this.onChangePassword(text)}
+
+                        // next button logic => remove keyboard
+                        returnKeyType="done"
+                        ref={(input) => { this.passwordInput = input; }}
                     />
                     <View style={styles.link}>
                         <Button
@@ -258,8 +275,11 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: Colors.tintColor,
-        paddingBottom: 30,
         paddingTop: 20,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     buttonText: {
         fontSize: 20,
