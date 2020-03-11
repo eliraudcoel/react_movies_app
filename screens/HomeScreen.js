@@ -179,7 +179,7 @@ export default function HomeScreen({ navigation }) {
                 }}
             />
 
-            <View style={[styles.pageContainer, { paddingTop: Platform.OS === 'ios' ? insets.top : 0 }]}>
+            <View style={styles.pageContainer}>
                 {movies && movies.length > 0 ? (
                     <Movies movies={movies} navigation={navigation} nextScreen='Movie' />
                 ) : (
@@ -200,6 +200,7 @@ const styles = StyleSheet.create({
     pageContainer: {
         flex: 1,
         backgroundColor: Colors.whiteColor
+        // paddingTop: 0
     },
     noFilmContainer: {
         paddingTop: 10,

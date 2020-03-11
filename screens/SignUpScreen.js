@@ -7,9 +7,9 @@ import {
     Dimensions,
     AsyncStorage,
     Keyboard,
-    Platform,
 } from 'react-native';
 import { Input, Button, Icon } from 'react-native-elements';
+import { useSafeArea } from 'react-native-safe-area-context';
 import Colors from '../constants/Colors';
 import BobineImage from '../assets/images/bobine.jpg';
 import ParallaxView from '../components/ParallaxView';
@@ -19,7 +19,7 @@ import { UserContext } from '../contexts/UserContext';
 // TODO : make it unique with SignUp
 export function SignUpScreen({ navigation }) {
     // States
-    const [buttonStyle, setButtonStyle] = useState({});
+    const [keyboardOpen, setKeyboardOpen] = useState(false);
     const [showLoading, setLoading] = useState(false);
 
     // Page information
@@ -33,7 +33,11 @@ export function SignUpScreen({ navigation }) {
     // User context
     const [user, updateUser] = useContext(UserContext);
 
+    // Get height of the screen
     const { height } = Dimensions.get('window');
+
+    // Get SafeArea details - came from SafeAreaProvider declare on App.js file
+    const insets = useSafeArea();
 
     // Équivalent à componentDidMount plus componentDidUpdate :
     useEffect(() => {
@@ -47,13 +51,12 @@ export function SignUpScreen({ navigation }) {
     }, []);
 
     _keyboardDidShow = () => {
-        setButtonStyle({
-            paddingBottom: 20,
-        })
+        // Remove paddingBottom only when there are bottom's inset 
+        setKeyboardOpen(true)
     };
 
     _keyboardDidHide = () => {
-        setButtonStyle(null);
+        setKeyboardOpen(false);
     }
 
     goToSignUp = () => {
@@ -95,9 +98,9 @@ export function SignUpScreen({ navigation }) {
                     storeId(response.id),
                     updateUser(response),
                 ])
-                .then((values) => {
-                    navigation.navigate('Home');
-                })
+                    .then((values) => {
+                        navigation.navigate('Home');
+                    })
             })
             .catch((error) => {
                 console.log(error);
@@ -115,7 +118,12 @@ export function SignUpScreen({ navigation }) {
             bottomContainer={(
                 <Button
                     title="JE M'INSCRIS" type="solid"
-                    buttonStyle={[styles.button, buttonStyle]}
+                    buttonStyle={[styles.button, {
+                        // Logic :
+                        // keyboardOpen => always 20
+                        // if insets on bottom of the page -> set 30
+                        paddingBottom: (keyboardOpen || insets.bottom === 0) ? 20 : 30,
+                    }]}
                     titleStyle={styles.buttonText}
                     onPress={() => connect()}
                     loading={showLoading}
@@ -128,12 +136,18 @@ export function SignUpScreen({ navigation }) {
                 <Text style={styles.text}>Vous</Text>
 
                 <View style={styles.formContainer}>
-                    <Input
+                <Input
                         placeholder='Email'
                         autoCapitalize='none'
                         autoCompleteType='email'
                         containerStyle={styles.divider}
                         onChangeText={text => this.onChangeEmail(text)}
+                        // TODO : make it works on Platform Android
+                        blurOnSubmit={false}
+
+                        // next button logic => go to next input
+                        returnKeyType="next"
+                        onSubmitEditing={() => { this.pwdInput.focus(); }}
                     />
                     <Input
                         placeholder='Mot de passe'
@@ -141,6 +155,10 @@ export function SignUpScreen({ navigation }) {
                         autoCompleteType='password'
                         secureTextEntry={true}
                         onChangeText={text => this.onChangePassword(text)}
+
+                        // next button logic => remove keyboard
+                        returnKeyType="done"
+                        ref={(input) => { this.pwdInput = input; }}
                     />
                 </View>
             </View>
@@ -185,8 +203,11 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: Colors.tintColor,
-        paddingBottom: 30,
         paddingTop: 20,
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
     },
     buttonText: {
         fontSize: 20,
